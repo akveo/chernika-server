@@ -12,6 +12,7 @@ module.exports.init = function() {
 	
 	server.post("/account", BasicPolicy, AccountController.login);
 	server.get("/account", BasicPolicy, AccountController.find);
+	server.get("/account/photos", BasicPolicy, AccountController.findPhotos);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;

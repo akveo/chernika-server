@@ -4,21 +4,21 @@ var Schema = mongoose.Schema;
 
 module.exports = {
 
-	create: function () {
+	init: function () {
 	
 		var s = config.dbSettings;
-		mongoose.createConnection(s.host, s.database, s.port, { user: s.user, pass: s.password });
+		mongoose.connect('mongodb://{0}/{1}'.format(s.host, s.database));
 		
 		var Account = mongoose.model('Account', { name: String, vkId: String });
 		
-		var account = new Account({ name: 'Test', vkId: 'Test' });
-		account.save(function (err) {
-			if (err) {
-				logger.info('Cannot save account: ', err);
-			} else {
-				logger.info('Account saved sacussfully!');
-			}
-		});
+		// var account = new Account({ name: 'Test', vkId: 'Test' });
+		// account.save(function (err) {
+			// if (err) {
+				// logger.info('Cannot save account: ', err);
+			// } else {
+				// logger.info('Account saved successfully!');
+			// }
+		// });
 	}
 }
 
