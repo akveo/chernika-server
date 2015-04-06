@@ -2,20 +2,27 @@
 module.exports = {
     
     login: function (req, res) {
-		logger.info('API method account.login called.');
-    },
-	
-	find: function (req, res) {
-		
 		if (!req.params.userId) {
 			res.send(400, "Incorrect parameters");
 			return;
 		}
-		
-		vkApi = require('../../vkApi');
-		vkApi.getUserInfo(req.params.userId)
-			.then(function(userInfo) {
-				res.send(userInfo);
+		UserService.login(req.params.userId)
+			.then(function() {
+				res.send('OK');
+			}, function(err) {
+				logger.error("Account API error: " + err);
+				res.send(500, "Internal error");
+			})
+    },
+	
+	find: function (req, res) {
+		if (!req.params.userId) {
+			res.send(400, "Incorrect parameters");
+			return;
+		}
+		UserService.find(req.params.userId)
+			.then(function(user) {
+				res.send(user);
 			}, function(err) {
 				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
@@ -27,9 +34,7 @@ module.exports = {
 			res.send(400, "Incorrect parameters");
 			return;
 		}
-		
-		vkApi = require('../../vkApi');
-		vkApi.getUserPhotos(req.params.userId)
+		UserService.findPhotos(req.params.userId, req.params.type)
 			.then(function(photos) {
 				res.send(photos);
 			}, function(err) {

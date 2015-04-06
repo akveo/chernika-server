@@ -10,9 +10,9 @@ module.exports.init = function() {
 		  .use(restify.queryParser())
 		  .use(restify.bodyParser());
 	
-	server.post("/account", BasicPolicy, AccountController.login);
-	server.get("/account", BasicPolicy, AccountController.find);
-	server.get("/account/photos", BasicPolicy, AccountController.findPhotos);
+	server.post("/user", BasicPolicy, UserController.login);
+	server.get("/user", BasicPolicy, UserController.find);
+	server.get("/user/photos", BasicPolicy, UserController.findPhotos);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;

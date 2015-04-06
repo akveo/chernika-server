@@ -14,7 +14,8 @@
 	"q": ">=1.2.0",
 	"restify": "2.8.4",
 	"path": "0.11.14",
-	"vksdk": ">=5.1.0"
+	"vksdk": ">=5.1.0",
+	"underscore": ">=1.8.3"
   },
   "repository": {
     "type": "git",

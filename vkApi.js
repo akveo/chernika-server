@@ -1,5 +1,5 @@
 
-var q = require('q');
+var q = require('q');;
 var VK = require('vksdk');
 var vk = new VK(config.vkSettings);
 
@@ -34,10 +34,9 @@ module.exports = {
 	
 	getUserPhotos: function(id) {
 		var deferred = q.defer();
-		vk.request('photos.get ', {'owner_id' : id, 'album_id': 'profile', 'rev': 1}, function(r) {
+		vk.request('photos.get ', {'owner_id' : id, 'album_id': 'profile', 'rev': 1, 'photo_sizes': 1}, function(r) {
 			if (!r.error) {
-				var photos = r.response.items.map(function (i) { return i.photo_604; });
-				deferred.resolve(photos);
+				deferred.resolve(r.response.items);
 			} else {
 				deferred.reject(r.error);
 			}
