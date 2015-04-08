@@ -9,12 +9,12 @@ module.exports = {
 		var s = config.dbSettings;
 		mongoose.connect('mongodb://{0}/{1}'.format(s.host, s.database));
 		
-		GLOBAL['Account'] = mongoose.model('Account', { 
-			id: Integer, 
+		GLOBAL['User'] = mongoose.model('User', { 
+			id: Number, 
 			first_name: String, 
 			last_name: String, 
-			sex: Integer, 
-			photo_max_orig: String
+			sex: Number, 
+			photo: String
 		});
 	}
 }
