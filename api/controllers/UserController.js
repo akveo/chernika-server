@@ -1,14 +1,14 @@
 
 module.exports = {
     
-    login: function (req, res) {
+    login: function (req, res, next) {
 		if (!req.params.userId) {
 			res.send(400, "Incorrect parameters");
 			return;
 		}
 		UserService.login(req.params.userId)
 			.then(function() {
-				res.send('OK');
+				return next();
 			}, function(err) {
 				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
@@ -27,6 +27,10 @@ module.exports = {
 				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
 			})
+    },
+	
+	update: function (req, res) {
+		res.send(204);
     },
 	
 	findPartners: function (req, res) {

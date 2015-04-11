@@ -1,5 +1,6 @@
 
 var restify = require('restify');
+var cookieParser = require('restify-cookies');
 var q = require('q');
 var path = require('path');
 initBasicComponents();
@@ -8,12 +9,14 @@ module.exports.init = function() {
 	var server = restify.createServer();
 	server.use(restify.fullResponse())
 		  .use(restify.queryParser())
-		  .use(restify.bodyParser());
+		  .use(restify.bodyParser())
+		  .use(cookieParser.parse);
 	
-	server.get("/user/login", BasicPolicy, UserController.login);
-	server.get("/user/get", BasicPolicy, UserController.find);
-	server.get("/user/photos", BasicPolicy, UserController.findPhotos);
-	server.get("/user/partners", BasicPolicy, UserController.findPartners);
+	server.post("/user", UserController.login, AuthPolicy.login);
+	server.get("/user", AuthPolicy.checkSession, UserController.find);
+	server.put("/user", AuthPolicy.checkSession, UserController.update);
+	server.get("/user/photos", AuthPolicy.checkSession, UserController.findPhotos);
+	server.get("/suggestions", AuthPolicy.checkSession, UserController.findPartners);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;
