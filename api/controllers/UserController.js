@@ -10,7 +10,6 @@ module.exports = {
 			.then(function() {
 				return next();
 			}, function(err) {
-				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
 			})
     },
@@ -24,7 +23,6 @@ module.exports = {
 			.then(function(user) {
 				res.send(user);
 			}, function(err) {
-				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
 			})
     },
@@ -42,7 +40,6 @@ module.exports = {
 			.then(function(partners) {
 				res.send(partners);
 			}, function(err) {
-				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
 			})
 	},
@@ -56,7 +53,6 @@ module.exports = {
 			.then(function(photos) {
 				res.send(photos);
 			}, function(err) {
-				logger.error("Account API error: " + err);
 				res.send(500, "Internal error");
 			})
 	}

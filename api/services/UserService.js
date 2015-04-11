@@ -28,10 +28,10 @@ module.exports = {
 	find: function(userId) {
 		var deferred = q.defer();
 		User.findOne({ id: userId }, function (err, user) {
-			if (!err) {
+			if (!err && user) {
 				deferred.resolve(user);
 			} else {
-				logger.info('Cannot save user: ', err);
+				logger.info('Cannot return user %d: %s', userId, err);
 				deferred.reject(err);
 			}
 		});

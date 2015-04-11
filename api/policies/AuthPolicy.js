@@ -23,7 +23,7 @@ module.exports = {
 			if (session.privateKey == config.privateKey) {
 				return next();
 			}
-		} catch() { }
+		} catch(exc) { }
 		
 		res.send(403, "You are not permitted to perform this action.");
 	}
