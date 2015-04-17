@@ -13,10 +13,10 @@ module.exports.init = function() {
 		  .use(cookieParser.parse);
 	
 	server.post("/user", UserController.login, AuthPolicy.login);
-	server.get("/user", AuthPolicy.checkSession, UserController.find);
-	server.put("/user", AuthPolicy.checkSession, UserController.update);
+	server.get("/user/profile", AuthPolicy.checkSession, UserController.find);
+	server.put("/user/profile", AuthPolicy.checkSession, UserController.update);
 	server.get("/user/photos", AuthPolicy.checkSession, UserController.findPhotos);
-	server.get("/suggestions", AuthPolicy.checkSession, UserController.findPartners);
+	server.get("/suggestions", AuthPolicy.checkSession, UserController.suggestByGeo);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;

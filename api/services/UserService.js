@@ -19,8 +19,6 @@ module.exports = {
 						user.photo = vkUser.photo_max_orig;
 						
 						return self.save(user);
-					}, function(err) {
-						throw err;
 					});
 			});
 	},
@@ -62,35 +60,26 @@ module.exports = {
 				});
 				return _.filter(photos, function (i) { return i; });
 				
-			}, function(err) {
-				throw err;
 			})
 	},
 	
-	findPartners: function (userId, count) {
+	suggestByGeo: function (userId) {
 		var self = this;
 		return this.find(userId)
 			.then(function(user) {
 				if (!user) return [];
-				return self.getUsers(user.sex, count || 100)
-					.then(function(users) {
+				
+				var pos = user.lastKnownPosition;
+				var maxDistance = user.maxDistance || 12;
+				
+				return User.geoNear([pos.lon, pos.lat], {
+						maxDistance: maxDistance / 6371, // km to radians
+						distanceMultiplier: 6371, // radians to km
+						spherical: true
+					})
+					.then(function (users) {
 						return users;
-					}, function(err) {
-						throw err;
 					});
 			});
-	},
-	
-	getUsers: function (sex, count) {
-		var deferred = q.defer();
-		User.find({ sex: sex }, function (err, users) {
-			if (!err) {
-				deferred.resolve(users);
-			} else {
-				logger.info('Cannot save user: ', err);
-				deferred.reject(err);
-			}
-		}).limit(count);
-		return deferred.promise;
 	}
 }
