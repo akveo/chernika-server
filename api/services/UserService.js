@@ -5,12 +5,12 @@ var vkApi = require('../../vkApi');
 
 module.exports = {
 
-	login: function (userId) {
+	login: function (userId, accessToken) {
 		var self = this;
 		return this.find(userId)
 			.then(function(user) {
 				user = user || new User();
-				return vkApi.getUserInfo(userId)
+				return vkApi.login(userId, accessToken)
 					.then(function(vkUser) {
 						user.id = vkUser.id;
 						user.first_name = vkUser.first_name;
@@ -26,11 +26,9 @@ module.exports = {
 	find: function(userId) {
 		var deferred = q.defer();
 		User.findOne({ id: userId }, function (err, user) {
-			if (!err && user) {
-				deferred.resolve(user);
-			} else {
+			deferred.resolve(user);
+			if (err) {
 				logger.info('Cannot return user %d: %s', userId, err);
-				deferred.reject(err);
 			}
 		});
 		return deferred.promise;
@@ -70,7 +68,7 @@ module.exports = {
 				if (!user) return [];
 				
 				var pos = user.lastKnownPosition;
-				var maxDistance = user.maxDistance || 12;
+				var maxDistance = user.maxDistance || 10;
 				
 				return User.geoNear([pos.lon, pos.lat], {
 						maxDistance: maxDistance / 6371, // km to radians

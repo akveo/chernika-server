@@ -20,6 +20,30 @@ module.exports = {
 		return deferred.promise;
 	},
 	
+	login: function(userId, accessToken) {
+		var self = this;
+		return this.checkAccessToken(userId, accessToken)
+			.then(function() {
+				return self.getUserInfo(userId);
+			});
+	},
+	
+	checkAccessToken: function(userId, accessToken) {
+		var deferred = q.defer();
+		vk.request('users.get', {'access_token' : accessToken}, function(r) {
+			if (!r.error && r.response && r.response.length > 0) {
+				if (r.response[0].id == userId) {
+					deferred.resolve();
+				} else {
+					deferred.reject('Incorrect access token for user: %d', userId);
+				}
+			} else {
+				deferred.reject(r.error);
+			}
+		});
+		return deferred.promise;
+	},
+	
 	getUserInfo: function(id) {
 		var deferred = q.defer();
 		vk.request('users.get', {'user_id' : id, 'fields': 'id, first_name, last_name, sex, photo_max_orig'}, function(r) {

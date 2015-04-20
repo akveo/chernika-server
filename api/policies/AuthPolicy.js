@@ -5,8 +5,8 @@ module.exports = {
 	
 	login: function(req, res) {
 		var session = JSON.stringify({
-			userId: req.params.userId,
-			privateKey: config.privateKey
+			id: req.params.user_id,
+			ts: new Date().getTime() 
 		});
 		res.setCookie('session', encryptor.cipher(session));
 		res.send(200);
@@ -20,7 +20,8 @@ module.exports = {
 		
 		try {
 			var session = JSON.parse(encryptor.decipher(req.cookies.session));
-			if (session.privateKey == config.privateKey) {
+			if (session.id && new Date().getTime() > session.ts) {
+				req.params.userId = session.id;
 				return next();
 			}
 		} catch(exc) { }

@@ -2,11 +2,11 @@
 module.exports = {
     
     login: function (req, res, next) {
-		if (!req.params.userId) {
+		if (!req.params.user_id || !req.params.access_token) {
 			res.send(400, 'Incorrect parameters');
 			return;
 		}
-		UserService.login(req.params.userId)
+		UserService.login(req.params.user_id, req.params.access_token)
 			.then(function() {
 				return next();
 			})

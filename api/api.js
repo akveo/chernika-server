@@ -7,10 +7,11 @@ initBasicComponents();
 
 module.exports.init = function() {
 	var server = restify.createServer();
-	server.use(restify.fullResponse())
-		  .use(restify.queryParser())
-		  .use(restify.bodyParser())
-		  .use(cookieParser.parse);
+	server
+		.use(restify.fullResponse())
+		.use(restify.bodyParser())
+		.use(restify.queryParser())
+		.use(cookieParser.parse);
 	
 	server.post("/user", UserController.login, AuthPolicy.login);
 	server.get("/user/profile", AuthPolicy.checkSession, UserController.find);

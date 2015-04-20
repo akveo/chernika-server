@@ -7,7 +7,11 @@ module.exports = {
 	init: function () {
 	
 		var s = config.dbSettings;
-		mongoose.connect('mongodb://{0}/{1}'.format(s.host, s.database));
+		mongoose.connect('mongodb://{0}:{1}/{2}'.format(s.host, s.port, s.database), function(err) {
+			if (err) {
+				logger.error('Mongodb connection error: ' + err);
+			};
+		});
 		
 		var userSchema = new mongoose.Schema({
 			id: Number, 
@@ -26,14 +30,14 @@ module.exports = {
 		GLOBAL['User'] = mongoose.model('User', userSchema);
 		
 		// var user = new User();
-		// user.id = 126;
-		// user.first_name = 'Test4';
-		// user.last_name = 'Test4';
+		// user.id = 3;
+		// user.first_name = 'Test3';
+		// user.last_name = 'Test3';
 		// user.sex = 1;
 		// user.photo = '';
 		// user.lastKnownPosition = {
-			// lon: 53.9524445,
-			// lat: 27.7131621
+			// lon: 53.894965, 
+			// lat: 27.547369 
 		// };
 		
 		// user.save(function (err) {
