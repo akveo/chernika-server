@@ -11,6 +11,7 @@ module.exports = {
 				return next();
 			})
 			.fail(function (error) {
+				logger.error('Login error: ' + error);
 				res.send(500, 'Internal error');
 			});
     },
