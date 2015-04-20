@@ -5,26 +5,13 @@ var vk = new VK(config.vkSettings);
 
 module.exports = {
 	
-	init: function() {
-		var deferred = q.defer();
-		vk.requestServerToken();
-		
-		vk.on('serverTokenReady', function(token) {
-			if (token && token.access_token) {
-				vk.setToken(token.access_token);
-				deferred.resolve();
-			} else {
-				deferred.reject();
-			}
-		});
-		return deferred.promise;
-	},
-	
 	login: function(userId, accessToken) {
 		var self = this;
 		return this.checkAccessToken(userId, accessToken)
 			.then(function() {
 				return self.getUserInfo(userId);
+			}, function(err) {
+				logger.error('Check access token: ' + err);
 			});
 	},
 	

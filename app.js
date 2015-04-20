@@ -13,11 +13,8 @@
 
 	var model = require('./api/model');
 	var api = require('./api/api');
-	var vkApi = require('./vkApi');
 		
-	vkApi.init()
-		.then(function () {
-			model.init();
-			api.init();
-		});
+	model.init();
+	api.init();
+	
 })();
