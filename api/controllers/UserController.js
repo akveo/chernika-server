@@ -16,6 +16,14 @@ module.exports = {
 			});
     },
 	
+	isLoggedIn: function(req, res) {
+		if (!req.params.userId) {
+			res.send(400, 'Incorrect parameters');
+			return;
+		}
+		res.send(204);
+	},
+	
 	find: function (req, res) {
 		if (!req.params.userId) {
 			res.send(400, 'Incorrect parameters');

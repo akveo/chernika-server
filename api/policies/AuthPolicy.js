@@ -9,7 +9,7 @@ module.exports = {
 			ts: new Date().getTime() 
 		});
 		res.setCookie('session', encryptor.cipher(session));
-		res.send(200);
+		res.send(204);
 	},
 	
 	checkSession: function (req, res, next) {

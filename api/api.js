@@ -14,6 +14,7 @@ module.exports.init = function() {
 		.use(cookieParser.parse);
 	
 	server.post("/user", UserController.login, AuthPolicy.login);
+	server.get("/user", AuthPolicy.checkSession, UserController.isLoggedIn);
 	server.get("/user/profile", AuthPolicy.checkSession, UserController.find);
 	server.put("/user/profile", AuthPolicy.checkSession, UserController.update);
 	server.get("/user/photos", AuthPolicy.checkSession, UserController.findPhotos);
