@@ -1,6 +1,5 @@
 
 var restify = require('restify');
-var cookieParser = require('restify-cookies');
 var q = require('q');
 var path = require('path');
 initBasicComponents();
@@ -10,8 +9,7 @@ module.exports.init = function() {
 	server
 		.use(restify.fullResponse())
 		.use(restify.bodyParser())
-		.use(restify.queryParser())
-		.use(cookieParser.parse);
+		.use(restify.queryParser());
 	
 	server.post("/user", UserController.login, AuthPolicy.login);
 	server.get("/user", AuthPolicy.checkSession, UserController.isLoggedIn);

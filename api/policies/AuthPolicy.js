@@ -4,11 +4,11 @@ var encryptor = require('../../encryptor')
 module.exports = {
 	
 	login: function(req, res) {
-		var session = JSON.stringify({
+		var token = JSON.stringify({
 			id: req.params.user_id,
 			ts: new Date().getTime() 
 		});
-		res.setCookie('session', encryptor.cipher(session));
+		res.setHeader('Access-Token', encryptor.cipher(token));
 		res.send(204);
 	},
 	
@@ -19,9 +19,9 @@ module.exports = {
 		}
 		
 		try {
-			var session = JSON.parse(encryptor.decipher(req.cookies.session));
-			if (session.id && new Date().getTime() > session.ts) {
-				req.params.userId = session.id;
+			var token = JSON.parse(encryptor.decipher(req.headers['access-token']));
+			if (token.id && new Date().getTime() > token.ts) {
+				req.params.userId = token.id;
 				return next();
 			}
 		} catch(exc) { }

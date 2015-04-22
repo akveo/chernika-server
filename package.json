@@ -16,8 +16,7 @@
 	"path": "0.11.14",
 	"vksdk": ">=5.1.0",
 	"underscore": ">=1.8.3",
-	"crypto": "0.0.3",
-	"restify-cookies": "0.1.1"
+	"crypto": "0.0.3"
   },
   "repository": {
     "type": "git",
