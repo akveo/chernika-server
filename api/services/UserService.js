@@ -59,7 +59,7 @@ module.exports = {
 		var deferred = q.defer();
 		user.save(function (err) {
 			if (!err) {
-				deferred.resolve();
+				deferred.resolve(user.id);
 			} else {
 				logger.info('Cannot save user: ', err);
 				deferred.reject(err);

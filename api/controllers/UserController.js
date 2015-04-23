@@ -6,7 +6,8 @@ module.exports = {
 			return res.send(400, 'Incorrect parameters');
 		}
 		UserService.login(req.params.user_id, req.params.access_token)
-			.then(function() {
+			.then(function(userId) {
+				req.params.userId = userId;
 				return next();
 			})
 			.fail(function (error) {

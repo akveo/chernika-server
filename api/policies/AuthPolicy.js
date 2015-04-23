@@ -5,7 +5,7 @@ module.exports = {
 	
 	login: function(req, res) {
 		var token = JSON.stringify({
-			id: req.params.user_id,
+			id: req.params.userId,
 			ts: new Date().getTime() 
 		});
 		res.setHeader('Access-Token', encryptor.cipher(token));
