@@ -1,38 +1,50 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var autoIncrement = require('mongoose-auto-increment');
 
 module.exports = {
 
 	init: function () {
 	
 		var s = config.dbSettings;
-		mongoose.connect('mongodb://{0}:{1}/{2}'.format(s.host, s.port, s.database), function(err) {
+		var connection = mongoose.connect('mongodb://{0}:{1}/{2}'.format(s.host, s.port, s.database), function(err) {
 			if (err) {
 				logger.error('Mongodb connection error: ' + err);
 			};
 		});
+		autoIncrement.initialize(mongoose.connection);
 		
 		var userSchema = new mongoose.Schema({
-			id: Number, 
-			first_name: String, 
-			last_name: String, 
+			id: { type: Schema.Types.ObjectId },
+			vkId: Number, 
+			firstName: String,
 			sex: Number, 
 			photo: String,
 			lastKnownPosition: {
 				lon: Number,
 				lat: Number
+			},
+			settings: {
+				enableFriends: Boolean,
+				distance: Number,
+				minAge: Number,
+				maxAge: Number,
+				show: Number
 			}
 		});
-		
+		userSchema.plugin(autoIncrement.plugin, {
+			model: 'User',
+			field: 'id',
+			startAt: 1
+		});
 		userSchema.index({ "lastKnownPosition": "2d" });
 		
 		GLOBAL['User'] = mongoose.model('User', userSchema);
 		
 		// var user = new User();
-		// user.id = 3;
+		// user.vkId = 3;
 		// user.first_name = 'Test3';
-		// user.last_name = 'Test3';
 		// user.sex = 1;
 		// user.photo = '';
 		// user.lastKnownPosition = {

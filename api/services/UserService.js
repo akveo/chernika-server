@@ -5,33 +5,54 @@ var vkApi = require('../../vkApi');
 
 module.exports = {
 
-	login: function (userId, accessToken) {
+	login: function (vkId, accessToken) {
 		var self = this;
-		return this.find(userId)
+		return this.findByFilter({ vkId: vkId })
 			.then(function(user) {
 				user = user || new User();
-				return vkApi.login(userId, accessToken)
+				return vkApi.login(vkId, accessToken)
 					.then(function(vkUser) {
-						user.id = vkUser.id;
-						user.first_name = vkUser.first_name;
-						user.last_name = vkUser.last_name;
+						user.vkId = vkUser.id;
+						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
 						user.photo = vkUser.photo_max_orig;
 						
+						if (user.isNew) {
+							user.settings = {
+								enableFriends: true,
+								distance: 100,
+								minAge: 18,
+								maxAge: 34,
+								show: user.sex == 1 ? 2 
+									: user.sex == 2 ? 1
+									: 0
+							}
+						}
 						return self.save(user);
 					});
 			});
 	},
 	
-	find: function(userId) {
+	find: function(id) {
+		return this.findByFilter({ id: id });
+	},
+	
+	findByFilter: function(filter) {
 		var deferred = q.defer();
-		User.findOne({ id: userId }, function (err, user) {
+		User.findOne(filter, function (err, user) {
 			deferred.resolve(user);
 			if (err) {
-				logger.info('Cannot return user %d: %s', userId, err);
+				logger.info('Cannot return user.');
 			}
 		});
 		return deferred.promise;
+	},
+	
+	getSettings: function(id) {
+		return this.find(id)
+			.then(function(user) {
+				return user && user.settings;
+			});
 	},
 	
 	save: function(user) {
@@ -48,17 +69,21 @@ module.exports = {
 	},
 	
 	findPhotos: function (userId, type) {
-		return vkApi.getUserPhotos(userId)
-			.then(function(photos) {
+		return this.find(userId)
+			.then(function(user) {
+				if (!user) return [];
 				
-				photos = _.map(photos, function (i) {
-					return _.find(i.sizes, function(j) { 
-						return j.type == (type || 'z') 
-					}); 
-				});
-				return _.filter(photos, function (i) { return i; });
-				
-			})
+				return vkApi.getUserPhotos(user.vkId)
+					.then(function(photos) {						
+						photos = _.map(photos, function (i) {
+							return _.find(i.sizes, function(j) { 
+								return j.type == (type || 'z') 
+							}); 
+						});
+						return _.filter(photos, function (i) { return i; });
+						
+					})
+			});
 	},
 	
 	suggestByGeo: function (userId) {

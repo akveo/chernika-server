@@ -12,11 +12,14 @@ module.exports.init = function() {
 		.use(restify.queryParser());
 	
 	server.post("/user", UserController.login, AuthPolicy.login);
-	server.get("/user", AuthPolicy.checkSession, UserController.isLoggedIn);
-	server.get("/user/profile", AuthPolicy.checkSession, UserController.find);
-	server.put("/user/profile", AuthPolicy.checkSession, UserController.update);
+	server.get("/user", AuthPolicy.checkSession, UserController.find);
+	server.get("/user/settings", AuthPolicy.checkSession, UserController.getSettings);
+	server.put("/user/settings", AuthPolicy.checkSession, UserController.updateSettings);
 	server.get("/user/photos", AuthPolicy.checkSession, UserController.findPhotos);
-	server.get("/suggestions", AuthPolicy.checkSession, UserController.suggestByGeo);
+	
+	server.get("/suggestions", AuthPolicy.checkSession, SuggestController.findByGeo);
+	server.get("/suggestions/like", AuthPolicy.checkSession, SuggestController.like);
+	server.get("/suggestions/dislike", AuthPolicy.checkSession, SuggestController.dislike);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;

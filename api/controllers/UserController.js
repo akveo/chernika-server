@@ -3,8 +3,7 @@ module.exports = {
     
     login: function (req, res, next) {
 		if (!req.params.user_id || !req.params.access_token) {
-			res.send(400, 'Incorrect parameters');
-			return;
+			return res.send(400, 'Incorrect parameters');
 		}
 		UserService.login(req.params.user_id, req.params.access_token)
 			.then(function() {
@@ -16,52 +15,31 @@ module.exports = {
 			});
     },
 	
-	isLoggedIn: function(req, res) {
-		if (!req.params.userId) {
-			res.send(400, 'Incorrect parameters');
-			return;
-		}
-		res.send(204);
-	},
-	
-	find: function (req, res) {
-		if (!req.params.userId) {
-			res.send(400, 'Incorrect parameters');
-			return;
-		}
+	find: function(req, res) {
 		UserService.find(req.params.userId)
 			.then(function(user) {
-				res.send(user);
+				res.send(user || {});
 			})
 			.fail(function (error) {
-				res.send(500, 'Internal error');
-			});
-    },
-	
-	update: function (req, res) {
-		res.send(204);
-    },
-	
-	suggestByGeo: function (req, res) {
-		if (!req.params.userId) {
-			res.send(400, 'Incorrect parameters');
-			return;
-		}
-		UserService.suggestByGeo(req.params.userId, req.params.count)
-			.then(function(users) {
-				res.send(users);
-			})
-			.fail(function (error) {
-				logger.error('Api SuggestByGeo: %s', error.toString());
 				res.send(500, 'Internal error');
 			});
 	},
 	
+	getSettings: function (req, res) {
+		UserService.getSettings(req.params.userId)
+			.then(function(settings) {
+				res.send(settings || {});
+			})
+			.fail(function (error) {
+				res.send(500, 'Internal error');
+			});
+    },
+	
+	updateSettings: function (req, res) {
+		res.send(204);
+    },
+	
 	findPhotos: function (req, res) {
-		if (!req.params.userId) {
-			res.send(400, 'Incorrect parameters');
-			return;
-		}
 		UserService.findPhotos(req.params.userId, req.params.type)
 			.then(function(photos) {
 				res.send(photos);
