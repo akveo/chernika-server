@@ -21,12 +21,15 @@ module.exports = {
 	},
 	
 	findByGeo: function (req, res) {
-		UserService.suggestByGeo(req.params.userId, req.params.count)
+		if (!req.params.lon, !req.params.lat) {
+			return res.send(400, 'Incorrect parameters');
+		}
+		SuggestService.findByGeo(req.params.userId, req.params.lon, req.params.lat)
 			.then(function(users) {
 				res.send(users);
 			})
 			.fail(function (error) {
-				logger.error('Api SuggestByGeo: %s', error.toString());
+				logger.error('Api suggest by Geo: %s', error.toString());
 				res.send(500, 'Internal error');
 			});
 	}

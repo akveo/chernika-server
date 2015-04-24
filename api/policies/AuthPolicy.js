@@ -13,11 +13,10 @@ module.exports = {
 	},
 	
 	checkSession: function (req, res, next) {
-
+		
 		if (config.withoutPolicy){
 			return next();
 		}
-		
 		try {
 			var token = JSON.parse(encryptor.decipher(req.headers['access-token']));
 			if (token.id && new Date().getTime() > token.ts) {

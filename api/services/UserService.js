@@ -7,8 +7,10 @@ module.exports = {
 
 	login: function (vkId, accessToken) {
 		var self = this;
+		
 		return this.findByFilter({ vkId: vkId })
 			.then(function(user) {
+			
 				user = user || new User();
 				return vkApi.login(vkId, accessToken)
 					.then(function(vkUser) {
@@ -81,28 +83,7 @@ module.exports = {
 							}); 
 						});
 						return _.filter(photos, function (i) { return i; });
-						
 					})
-			});
-	},
-	
-	suggestByGeo: function (userId) {
-		var self = this;
-		return this.find(userId)
-			.then(function(user) {
-				if (!user) return [];
-				
-				var pos = user.lastKnownPosition;
-				var maxDistance = user.maxDistance || 10;
-				
-				return User.geoNear([pos.lon, pos.lat], {
-						maxDistance: maxDistance / 6371, // km to radians
-						distanceMultiplier: 6371, // radians to km
-						spherical: true
-					})
-					.then(function (users) {
-						return users;
-					});
 			});
 	}
 }

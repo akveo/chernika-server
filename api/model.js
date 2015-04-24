@@ -15,8 +15,8 @@ module.exports = {
 		});
 		autoIncrement.initialize(mongoose.connection);
 		
-		var userSchema = new mongoose.Schema({
-			id: { type: Schema.Types.ObjectId },
+		var userSchema = new Schema({
+			id: Number,
 			vkId: Number, 
 			firstName: String,
 			sex: Number, 
@@ -38,9 +38,10 @@ module.exports = {
 			field: 'id',
 			startAt: 1
 		});
-		userSchema.index({ "lastKnownPosition": "2d" });
+		userSchema.index({ "lastKnownPosition": "2dsphere" });
 		
 		GLOBAL['User'] = mongoose.model('User', userSchema);
+		
 		
 		// var user = new User();
 		// user.vkId = 3;

@@ -20,6 +20,11 @@ module.exports.init = function() {
 	server.get("/suggestions", AuthPolicy.checkSession, SuggestController.findByGeo);
 	server.get("/suggestions/like", AuthPolicy.checkSession, SuggestController.like);
 	server.get("/suggestions/dislike", AuthPolicy.checkSession, SuggestController.dislike);
+	
+	server.get("/chats", AuthPolicy.checkSession, ChatController.findAll);
+	server.get("/chats/:chatId", AuthPolicy.checkSession, ChatController.find);
+	server.get("/chats/:chatId/messages", AuthPolicy.checkSession, ChatController.findMessages);
+	server.post("/chats/:chatId/messages", AuthPolicy.checkSession, ChatController.createMessage);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;
