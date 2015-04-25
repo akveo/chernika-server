@@ -51,7 +51,7 @@ module.exports = {
 	
 	getUserPhotos: function(id) {
 		var deferred = q.defer();
-		vk.request('photos.get ', {'owner_id' : id, 'album_id': 'profile', 'rev': 1, 'photo_sizes': 1}, function(r) {
+		vk.request('photos.get', {'owner_id' : id, 'album_id': 'profile', 'rev': 1, 'photo_sizes': 1}, function(r) {
 			if (!r.error) {
 				deferred.resolve(r.response.items);
 			} else {

@@ -82,8 +82,29 @@ module.exports = {
 								return j.type == (type || 'z') 
 							}); 
 						});
-						return _.filter(photos, function (i) { return i; });
+						photos = _.filter(photos, function (i) { return i && i.width; });
+						_.each(photos, function (i) { 
+							i.crop = countCrop(i);
+						});
+						return photos;
 					})
 			});
 	}
+}
+
+function countCrop(image) {
+	var crop = {};
+	
+	if (image.width/image.height > config.photoCropFactor) {
+		crop.width = image.height * config.photoCropFactor | 0;
+		crop.x = (image.width - crop.width) / 2;
+		crop.height = image.height;
+		crop.y = 0;
+	} else {
+		crop.width = image.width;
+		crop.x = 0;
+		crop.height = image.width / config.photoCropFactor | 0;
+		crop.y = (image.height - crop.height) / 2;
+	}
+	return crop;
 }
