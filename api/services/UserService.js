@@ -12,12 +12,13 @@ module.exports = {
 			.then(function(user) {
 			
 				user = user || new User();
-				return vkApi.login(vkId, accessToken)
-					.then(function(vkUser) {
+				return q.all([vkApi.login(vkId, accessToken), self.getUserPhotos(vkId)])
+					.spread(function(vkUser, photos) {
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
-						user.photo = vkUser.photo_max_orig;
+						user.bdate = vkUser.bdate;
+						user.photo = photos.length > 0 ? photos[0] : null;
 						
 						if (user.isNew) {
 							user.settings = {
@@ -71,22 +72,12 @@ module.exports = {
 	},
 	
 	getUserWithPhotos: function (userId, photoType) {
+		var self = this;
 		return this.find(userId)
 			.then(function(user) {
 				if (!user) return {};
-				
-				return vkApi.getUserPhotos(user.vkId)
-					.then(function(photos) {						
-						photos = _.map(photos, function (i) {
-							return _.find(i.sizes, function(j) { 
-								return j.type == (photoType || 'z') 
-							}); 
-						});
-						photos = _.filter(photos, function (i) { return i && i.width; });
-						_.each(photos, function (i) { 
-							i.crop = countCrop(i);
-						});
-												
+				return self.getUserPhotos(user.vkId)
+					.then(function(photos) {					
 						return {
 							firstName: user.firstName,
 							sex: user.sex,
@@ -94,6 +85,23 @@ module.exports = {
 							photos: photos
 						};
 					})
+			});
+	},
+	
+	getUserPhotos: function (userVkId, photoType) {
+		
+		return vkApi.getUserPhotos(userVkId)
+			.then(function(photos) {						
+				photos = _.map(photos, function (i) {
+					return _.find(i.sizes, function(j) { 
+						return j.type == (photoType || 'z') 
+					}); 
+				});
+				photos = _.filter(photos, function (i) { return i && i.width; });
+				_.each(photos, function (i) { 
+					i.crop = countCrop(i);
+				});
+				return photos;
 			});
 	}
 }

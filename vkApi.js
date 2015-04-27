@@ -35,7 +35,7 @@ module.exports = {
 	
 	getUserInfo: function(id) {
 		var deferred = q.defer();
-		vk.request('users.get', {'user_id' : id, 'fields': 'id, first_name, sex, photo_max_orig'}, function(r) {
+		vk.request('users.get', {'user_id' : id, 'fields': 'id, first_name, sex, bdate'}, function(r) {
 			if (!r.error && r.response && r.response.length > 0) {
 				if (!r.response[0].deactivated) {
 					deferred.resolve(r.response[0]);

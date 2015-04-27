@@ -20,7 +20,7 @@ module.exports = {
 			vkId: Number, 
 			firstName: String,
 			sex: Number, 
-			photo: String,
+			bdate: String,
 			lastKnownPosition: {
 				lon: Number,
 				lat: Number
@@ -31,6 +31,17 @@ module.exports = {
 				minAge: Number,
 				maxAge: Number,
 				show: Number
+			},
+			photo: {
+				src: String,
+				width: Number,
+				height: Number,
+				crop: {
+					x: Number,
+					y: Number,
+					width: Number,
+					height: Number
+				}
 			}
 		});
 		userSchema.plugin(autoIncrement.plugin, {
@@ -47,7 +58,7 @@ module.exports = {
 		// user.vkId = 3;
 		// user.first_name = 'Test3';
 		// user.sex = 1;
-		// user.photo = '';
+		// user.bdate = '';
 		// user.lastKnownPosition = {
 			// lon: 53.894965, 
 			// lat: 27.547369 
