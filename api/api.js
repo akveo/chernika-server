@@ -17,6 +17,8 @@ module.exports.init = function() {
 	server.put("/user/settings", AuthPolicy.checkSession, UserController.updateSettings);
 	server.get("/user/photos", AuthPolicy.checkSession, UserController.findPhotos);
 	
+	server.get("/profile/:id", AuthPolicy.checkSession, ProfileController.findProfile);
+	
 	server.get("/suggestions", AuthPolicy.checkSession, SuggestController.findByGeo);
 	server.get("/suggestions/like", AuthPolicy.checkSession, SuggestController.like);
 	server.get("/suggestions/dislike", AuthPolicy.checkSession, SuggestController.dislike);

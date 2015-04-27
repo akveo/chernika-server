@@ -41,9 +41,9 @@ module.exports = {
     },
 	
 	findPhotos: function (req, res) {
-		UserService.findPhotos(req.params.userId, req.params.type)
-			.then(function(photos) {
-				res.send(photos);
+		UserService.getUserWithPhotos(req.params.userId, req.params.type)
+			.then(function(user) {
+				res.send(user.photos || []);
 			})
 			.fail(function (error) {
 				res.send(500, 'Internal error');

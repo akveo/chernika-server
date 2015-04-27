@@ -70,23 +70,29 @@ module.exports = {
 		return deferred.promise;
 	},
 	
-	findPhotos: function (userId, type) {
+	getUserWithPhotos: function (userId, photoType) {
 		return this.find(userId)
 			.then(function(user) {
-				if (!user) return [];
+				if (!user) return {};
 				
 				return vkApi.getUserPhotos(user.vkId)
 					.then(function(photos) {						
 						photos = _.map(photos, function (i) {
 							return _.find(i.sizes, function(j) { 
-								return j.type == (type || 'z') 
+								return j.type == (photoType || 'z') 
 							}); 
 						});
 						photos = _.filter(photos, function (i) { return i && i.width; });
 						_.each(photos, function (i) { 
 							i.crop = countCrop(i);
 						});
-						return photos;
+												
+						return {
+							firstName: user.firstName,
+							sex: user.sex,
+							lastKnownPosition: user.lastKnownPosition,
+							photos: photos
+						};
 					})
 			});
 	}
