@@ -37,7 +37,13 @@ module.exports = {
     },
 	
 	updateSettings: function (req, res) {
-		res.send(204);
+		UserService.updateSettings(req.params)
+			.then(function() {
+				res.send(204);
+			})
+			.fail(function (error) {
+				res.send(500, 'Internal error');
+			});
     },
 	
 	findPhotos: function (req, res) {

@@ -58,6 +58,22 @@ module.exports = {
 			});
 	},
 	
+	updateSettings: function(params) {
+		var self = this;
+		return this.find(params.userId)
+			.then(function(user) {
+				var s = user.settings || {};
+				s.enableFriends = params.enableFriends && params.enableFriends.toLowerCase() == 'true';
+				s.distance = params.distance | 0;
+				s.minAge = params.minAge | 0;
+				s.maxAge = params.maxAge | 0;
+				s.show = params.show | 0;
+				
+				user.settings = s;
+				return self.save(user);
+			});
+	},
+	
 	save: function(user) {
 		var deferred = q.defer();
 		user.save(function (err) {
