@@ -10,23 +10,25 @@ module.exports.init = function() {
 		.use(restify.fullResponse())
 		.use(restify.bodyParser())
 		.use(restify.queryParser());
-	
+
 	server.post("/user", UserController.login, AuthPolicy.login);
-	server.get("/user", AuthPolicy.checkSession, UserController.find);
-	server.get("/user/settings", AuthPolicy.checkSession, UserController.getSettings);
-	server.put("/user/settings", AuthPolicy.checkSession, UserController.updateSettings);
-	server.get("/user/photos", AuthPolicy.checkSession, UserController.findPhotos);
+
+    server.use(AuthPolicy.checkSession);
+    server.get("/user", UserController.find);
+	server.get("/user/settings", UserController.getSettings);
+	server.put("/user/settings", UserController.updateSettings);
+	server.get("/user/photos", UserController.findPhotos);
 	
-	server.get("/profile/:id", AuthPolicy.checkSession, ProfileController.findProfile);
+	server.get("/profile/:id", ProfileController.findProfile);
 	
-	server.get("/suggestions", AuthPolicy.checkSession, SuggestController.findByGeo);
-	server.get("/suggestions/like", AuthPolicy.checkSession, SuggestController.like);
-	server.get("/suggestions/dislike", AuthPolicy.checkSession, SuggestController.dislike);
+	server.get("/suggestions", SuggestController.findByGeo);
+	server.get("/suggestions/like", SuggestController.like);
+	server.get("/suggestions/dislike", SuggestController.dislike);
 	
-	server.get("/chats", AuthPolicy.checkSession, ChatController.findAll);
-	server.get("/chats/:chatId", AuthPolicy.checkSession, ChatController.find);
-	server.get("/chats/:chatId/messages", AuthPolicy.checkSession, ChatController.findMessages);
-	server.post("/chats/:chatId/messages", AuthPolicy.checkSession, ChatController.createMessage);
+	server.get("/chats", ChatController.findAll);
+	server.get("/chats/:chatId", ChatController.find);
+	server.get("/chats/:chatId/messages", ChatController.findMessages);
+	server.post("/chats/:chatId/messages", ChatController.createMessage);
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;
@@ -40,7 +42,7 @@ module.exports.init = function() {
 		}
 	});
 	return deferred.promise;
-}
+};
 
 function initBasicComponents() {
 	var fs = require('fs'); 

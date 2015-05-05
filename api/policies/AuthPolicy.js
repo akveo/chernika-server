@@ -1,5 +1,5 @@
 
-var encryptor = require('../../encryptor')
+var encryptor = require('../../encryptor');
 
 module.exports = {
 	
@@ -24,7 +24,7 @@ module.exports = {
 				return next();
 			}
 		} catch(exc) { }
-		
+
 		res.send(403, "You are not permitted to perform this action.");
 	}
-}
+};
