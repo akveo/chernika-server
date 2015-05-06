@@ -13,7 +13,7 @@ module.exports = {
 	},
 	
 	checkSession: function (req, res, next) {
-		
+
 		if (config.withoutPolicy){
 			return next();
 		}
