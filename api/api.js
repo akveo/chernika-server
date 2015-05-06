@@ -14,6 +14,7 @@ module.exports.init = function() {
 	server.post("/user", UserController.login, AuthPolicy.login);
 
     server.use(AuthPolicy.checkSession);
+	
     server.get("/user", UserController.find);
 	server.get("/user/settings", UserController.getSettings);
 	server.put("/user/settings", UserController.updateSettings);
@@ -22,8 +23,8 @@ module.exports.init = function() {
 	server.get("/profile/:id", ProfileController.findProfile);
 	
 	server.get("/suggestions", SuggestController.findByGeo);
-	server.get("/suggestions/like", SuggestController.like);
-	server.get("/suggestions/dislike", SuggestController.dislike);
+	server.post("/suggestions/like", SuggestController.like);
+	server.post("/suggestions/dislike", SuggestController.dislike);
 	
 	server.get("/chats", ChatController.findAll);
 	server.get("/chats/:chatId", ChatController.find);

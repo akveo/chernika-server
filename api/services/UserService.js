@@ -21,15 +21,7 @@ module.exports = {
 						user.photo = photos.length > 0 ? photos[0] : null;
 						
 						if (user.isNew) {
-							user.settings = {
-								enableFriends: true,
-								distance: 100,
-								minAge: 18,
-								maxAge: 34,
-								show: user.sex == 1 ? 2 
-									: user.sex == 2 ? 1
-									: 0
-							}
+							user.initSettings();
 						}
 						return self.save(user);
 					});

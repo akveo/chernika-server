@@ -15,62 +15,19 @@ module.exports = {
 		});
 		autoIncrement.initialize(mongoose.connection);
 		
-		var userSchema = new Schema({
-			id: Number,
-			vkId: Number, 
-			firstName: String,
-			sex: Number, 
-			bdate: String,
-			lastKnownPosition: {
-				lon: Number,
-				lat: Number
-			},
-			settings: {
-				enableFriends: Boolean,
-				distance: Number,
-				minAge: Number,
-				maxAge: Number,
-				show: Number
-			},
-			photo: {
-				src: String,
-				width: Number,
-				height: Number,
-				crop: {
-					x: Number,
-					y: Number,
-					width: Number,
-					height: Number
-				}
-			}
-		});
+		//User
+		var userSchema = require('./models/User');
 		userSchema.plugin(autoIncrement.plugin, {
 			model: 'User',
 			field: 'id',
 			startAt: 1
 		});
 		userSchema.index({ "lastKnownPosition": "2dsphere" });
-		
 		GLOBAL['User'] = mongoose.model('User', userSchema);
 		
-		
-		// var user = new User();
-		// user.vkId = 3;
-		// user.first_name = 'Test3';
-		// user.sex = 1;
-		// user.bdate = '';
-		// user.lastKnownPosition = {
-			// lon: 53.894965, 
-			// lat: 27.547369 
-		// };
-		
-		// user.save(function (err) {
-			// if (!err) {
-				// logger.info('User saved successfully.');
-			// } else {
-				// logger.info('Cannot save user: ', err);
-			// }
-		// });
+		//Match
+		var matchSchema = require('./models/Match');
+		GLOBAL['Match'] = mongoose.model('Match', matchSchema);
 	}
 }
 
