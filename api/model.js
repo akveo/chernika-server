@@ -28,6 +28,13 @@ module.exports = {
 		//Match
 		var matchSchema = require('./models/Match');
 		GLOBAL['Match'] = mongoose.model('Match', matchSchema);
+
+        //Messae
+        var messageSchema = require('./models/Message');
+        GLOBAL['Message'] = mongoose.model('Message', messageSchema);
+
+        var chatSchema = require('./models/Chat');
+        GLOBAL['Chat'] = mongoose.model('Chat', chatSchema);
 	}
 }
 
