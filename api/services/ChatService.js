@@ -59,14 +59,37 @@ module.exports = {
 
     save: function(chat) {
         var deferred = q.defer();
-        chat.save(function (err) {
-            if (!err) {
-                deferred.resolve(chat.id);
-            } else {
+
+        chat.populate('users', function(err, chat) {
+            if (err) {
                 logger.info('Cannot save chat: ', err);
                 deferred.reject(err);
+            } else {
+                MatchService.areUsersMatched(chat.users[0].id, chat.users[1].id).then(function(areMatched) {
+                    if (areMatched === true) {
+                        _saveChat();
+                    } else {
+                        logger.info('Cannot save chat: users not matched');
+                        deferred.reject('Cannot save chat: users not matched');
+                    }
+                }, function(err) {
+                    logger.info('Cannot save chat: ', err);
+                    deferred.reject(err);
+                })
             }
         });
+
+        function _saveChat() {
+            chat.save(function (err) {
+                if (!err) {
+                    deferred.resolve(chat.id);
+                } else {
+                    logger.info('Cannot save chat: ', err);
+                    deferred.reject(err);
+                }
+            });
+        }
+
         return deferred.promise;
     }
 };
