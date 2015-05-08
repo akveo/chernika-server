@@ -25,19 +25,33 @@ module.exports = {
                 chat.messages.push(message);
                 deffered.resolve(message);
             } else {
-                logger.info('Cannot save message: Chat not found');
-                deferred.reject('Cannot save message: Chat not found');
+                logger.info('Cannot add message: Chat not found');
+                deferred.reject('Cannot add message: Chat not found');
             }
         }, function(err) {
-            logger.info('Cannot save message: ', err);
+            logger.info('Cannot add message: ', err);
             deferred.reject(err);
         });
     },
 
     findByUsersIds: function(id1, id2) {
-        return ChatService.findByFilter( {users: {$all: [
-            {$elemMatch: {id: id1}}, {$elemMatch: {id: id2}}
-        ]}});
+        var deferred = q.defer();
+
+        User.find({$or: [{id:id1}, {id:id2}]}, {_id: 1}, function(err, docs) {
+            if (docs && docs.length == 2) {
+                var objIds = docs.map(function(doc) { return doc._id; });
+                ChatService.findByFilter({$and: [ {users: objIds[0]}, {users: objIds[1]} ]})
+                    .then(function(data) {
+                        deferred.resolve(data);
+                    });
+            } else {
+                logger.info('Cannot find chat: chat users not found');
+                deferred.reject('Cannot find chat: chat users not found');
+            }
+
+        });
+
+        return deferred.promise;
     },
 
     save: function(chat) {
