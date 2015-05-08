@@ -34,15 +34,18 @@ module.exports = {
         });
     },
 
-    findByUsersIds: function(id1, id2) {
+    findByUsersIds: function(userId1, userId2) {
         var deferred = q.defer();
 
-        User.find({$or: [{id:id1}, {id:id2}]}, {_id: 1}, function(err, docs) {
-            if (docs && docs.length == 2) {
-                var objIds = docs.map(function(doc) { return doc._id; });
+        User.find({$or: [{id:userId1}, {id:userId2}]}, {_id: 1}, function(err, users) {
+            if (users && users.length == 2) {
+                var objIds = users.map(function(user) { return user._id; });
                 ChatService.findByFilter({$and: [ {users: objIds[0]}, {users: objIds[1]} ]})
                     .then(function(data) {
                         deferred.resolve(data);
+                    }, function(err) {
+                        logger.info('Cannot find chat: ', err);
+                        deferred.reject(err);
                     });
             } else {
                 logger.info('Cannot find chat: chat users not found');
