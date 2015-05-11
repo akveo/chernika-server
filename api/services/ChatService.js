@@ -18,41 +18,125 @@ module.exports = {
         return deferred.promise;
     },
 
-    addMessage: function(receiverId, message) {
+    addMessage: function(message) {
         var deferred = q.defer();
-        this.findByUsersIds(receiverId, message.sender.id).then(function(chat) {
-            if (chat) {
-                chat.messages.push(message);
-                deffered.resolve(message);
+
+        message.save(function (err) {
+            if (!err) {
+                deferred.resolve(message.id);
             } else {
-                logger.info('Cannot add message: Chat not found');
-                deferred.reject('Cannot add message: Chat not found');
+                logger.info('Cannot save chat: ', err);
+                deferred.reject(err);
             }
-        }, function(err) {
-            logger.info('Cannot add message: ', err);
-            deferred.reject(err);
         });
+
+        return deferred.promise;
+    },
+
+    getChatsList: function(userId) {
+        var deferred = q.defer();
+
+        var promises = [];
+
+        Chat.find({users: userId}).then(function(chats) {
+            chats.forEach(function(c) {
+                promises.push(ChatService.getInfo (c, userId));
+            });
+            q.all(promises).then(function(res) {
+                deferred.resolve(res)
+            });
+        });
+
+        return deferred.promise;
+    },
+
+    getInfo: function(chat, infoReceiverId) {
+        var deferred = q.defer();
+
+        var userForInfoId = chat.users[0] == infoReceiverId ? chat.users[1] : chat.users[0];
+        var info = {
+            chatId: chat._id
+        };
+
+        UserService.getInfo(userForInfoId)
+            .then(function(user) {
+                info.user = user;
+                return ChatService.getLastChatMessage(chat._id)
+            })
+            .then(function(message) {
+                info.message = message;
+                deferred.resolve(info)
+            }, function(err) {
+                deferred.reject(err);
+            });
+
+        return deferred.promise;
+    },
+
+    getLastChatMessage: function(chatId) {
+        var deferred = q.defer();
+
+        Message.aggregate([
+            {
+                "$match": {
+                    "chat": chatId
+                }
+            },
+            {
+                "$sort": {
+                    "created": -1
+                }
+            },
+            {
+                "$group": {
+                    "_id": null,
+                    "msgId": {
+                        "$first": "$_id"
+                    },
+                    "chat": {
+                        "$first": "$chat"
+                    },
+                    "text": {
+                        "$first": "$text"
+                    },
+                    "created": {
+                        "$first": "$created"
+                    },
+                    "sender": {
+                        "$first": "$sender"
+                    }
+                }
+            },
+            {
+                "$project": {
+                    "_id": "$msgId",
+                    "text": 1,
+                    "created": 1,
+                    "sender": 1,
+                    "chat": 1
+                }
+            }
+        ], function(err, m) {
+                if (!err) {
+                    deferred.resolve(m && m[0]);
+                } else {
+                    logger.info('Cannot save chat: ', err);
+                    deferred.reject(err);
+                }
+        });
+        return deferred.promise;
     },
 
     findByUsersIds: function(userId1, userId2) {
         var deferred = q.defer();
 
-        User.find({$or: [{id:userId1}, {id:userId2}]}, {_id: 1}, function(err, users) {
-            if (users && users.length == 2) {
-                var objIds = users.map(function(user) { return user._id; });
-                ChatService.findByFilter({$and: [ {users: objIds[0]}, {users: objIds[1]} ]})
-                    .then(function(data) {
-                        deferred.resolve(data);
-                    }, function(err) {
-                        logger.info('Cannot find chat: ', err);
-                        deferred.reject(err);
-                    });
-            } else {
-                logger.info('Cannot find chat: chat users not found');
-                deferred.reject('Cannot find chat: chat users not found');
-            }
-
-        });
+        ChatService.findByFilter({$and: [ {users: userId1}, {users: userId2 }]})
+            .then(function(data) {
+                deferred.resolve(data);
+            }, function(err) {
+                logger.info('Cannot find chat: ', err);
+                deferred.reject(err);
+            });
 
         return deferred.promise;
     },
@@ -60,35 +144,14 @@ module.exports = {
     save: function(chat) {
         var deferred = q.defer();
 
-        chat.populate('users', function(err, chat) {
-            if (err) {
+        chat.save(function (err) {
+            if (!err) {
+                deferred.resolve(chat.id);
+            } else {
                 logger.info('Cannot save chat: ', err);
                 deferred.reject(err);
-            } else {
-                MatchService.areUsersMatched(chat.users[0].id, chat.users[1].id).then(function(areMatched) {
-                    if (areMatched === true) {
-                        _saveChat();
-                    } else {
-                        logger.info('Cannot save chat: users not matched');
-                        deferred.reject('Cannot save chat: users not matched');
-                    }
-                }, function(err) {
-                    logger.info('Cannot save chat: ', err);
-                    deferred.reject(err);
-                })
             }
         });
-
-        function _saveChat() {
-            chat.save(function (err) {
-                if (!err) {
-                    deferred.resolve(chat.id);
-                } else {
-                    logger.info('Cannot save chat: ', err);
-                    deferred.reject(err);
-                }
-            });
-        }
 
         return deferred.promise;
     }

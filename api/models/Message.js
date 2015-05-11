@@ -3,9 +3,9 @@ var Schema = mongoose.Schema;
 
 var messageSchema = new Schema({
     sender:  {type: Schema.Types.ObjectId, ref:'User'},
-    match:  {type: Schema.Types.ObjectId, ref:'Match'},
+    chat:  {type: Schema.Types.ObjectId, ref:'Chat'},
     text: String,
-    dispatchTime: Date
+    created: Date
 });
 
 module.exports = messageSchema;

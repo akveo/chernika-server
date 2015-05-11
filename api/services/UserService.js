@@ -29,7 +29,7 @@ module.exports = {
 	},
 	
 	find: function(id) {
-		return this.findByFilter({ id: id });
+		return this.findByFilter({ _id: id });
 	},
 	
 	findByFilter: function(filter) {
@@ -42,6 +42,22 @@ module.exports = {
 		});
 		return deferred.promise;
 	},
+
+    getInfo: function(id) {
+        var deferred = q.defer();
+
+        UserService.find(id).then(function (user) {
+            deferred.resolve({
+                id: user.id,
+                firstName: user.firstName,
+                photo: user.photo
+            });
+        }, function(err) {
+            deferred.reject(err);
+        });
+
+        return deferred.promise;
+    },
 	
 	getSettings: function(id) {
 		return this.find(id)
