@@ -1,6 +1,7 @@
 var io = require('socket.io');
 var AuthPolicy = require('./policies/AuthPolicy.js');
 var restify = require('restify');
+var mongoose = require('mongoose');
 
 module.exports = {
     init: function(server) {
@@ -26,14 +27,19 @@ module.exports = {
 
             socket.on('new_message', function(message) {
                 var messageDocument = new Message(message);
-                console.log(messageDocument);
                 ChatService.addMessage(messageDocument).then(function () {
                     io.to('chat_' + message.chat).emit('new_message', message);
                 });
             });
 
-            socket.on('disconnect', function() {
-                console.log('user disconnected');
+            socket.on('messages_during_interval', function (req) {
+                var until = req.until ? new Date(req.until) : new Date();
+                var from = new Date(req.from);
+                var chatId = mongoose.Types.ObjectId(req.chat);
+                ChatService.getMessagesDuringInterval(chatId, from, until)
+                    .then(function(messages) {
+                       socket.emit('messages_during_interval', messages);
+                    });
             });
         });
     }

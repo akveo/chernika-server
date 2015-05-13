@@ -88,6 +88,46 @@ module.exports = {
         return deferred.promise;
     },
 
+    getMessagesDuringInterval: function (chatId, from, until) {
+        var deferred = q.defer();
+
+        Message.aggregate([
+            {
+                $match: {
+                    chat: chatId,
+                    created: {
+                        $gte: from,
+                        $lte: until
+                    }
+                }
+            },
+            {
+                "$sort": {
+                    "created": -1
+                }
+            },
+            {
+                "$project": {
+                    "_id": 1,
+                    "text": 1,
+                    "created": 1,
+                    "sender": 1,
+                    "chat": 1
+                }
+            }
+        ], function(err, messages) {
+            if (!err) {
+                deferred.resolve(messages);
+            } else {
+                logger.info('Cannot find messages during interval: ', err);
+                deferred.reject(err);
+            }
+        });
+
+
+        return deferred.promise;
+    },
+
     getLastChatMessage: function(chatId) {
         var deferred = q.defer();
 
