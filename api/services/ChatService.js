@@ -33,12 +33,27 @@ module.exports = {
         return deferred.promise;
     },
 
-    getChatsList: function(userId) {
+    findChats: function (userId) {
+        var deferred = q.defer();
+
+        Chat.find({users: userId}, function (err, chats) {
+            if (!err) {
+                deferred.resolve(chats);
+            } else {
+                logger.info('Cannot find chats: ', err);
+                deferred.reject(err);
+            }
+        });
+
+        return deferred.promise;
+    },
+
+    getChatsInfo: function(userId) {
         var deferred = q.defer();
 
         var promises = [];
 
-        Chat.find({users: userId}).then(function(chats) {
+        ChatService.findChats(userId).then(function(chats) {
             chats.forEach(function(c) {
                 promises.push(ChatService.getInfo (c, userId));
             });

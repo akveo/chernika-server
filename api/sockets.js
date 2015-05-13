@@ -11,26 +11,30 @@ module.exports = {
         ioFilterHelper(io, restify.bodyParser());
         ioFilterHelper(io, restify.queryParser());
         ioFilterHelper(io, AuthPolicy.checkSession);
+        
         io.on('connection', function(socket) {
             socket.userId = socket.request.params.userId;
-            socket.join('messages_' + socket.userId);
+//            socket.userId = '554b7aff499b7a6935ae4564';
+            joinChatRooms(socket);
+            
+            socket.on('chats_info', function () {
+                ChatService.getChatsInfo(socket.userId)
+                    .then(function (chatsInfo) {
+                        socket.emit('chats_info', chatsInfo);
+                    })
+            });
 
             socket.on('new_message', function(message) {
-                if (checkMatch(message, socket.userId)) {
-                    io.sockets.in('messages_' + message.recepientId).emit('new_message', message);
-                    io.sockets.in('messages_' + message.userId).emit('new_message', message);
-                    saveMessage(message);
-                } else {
-                    throwDumbError()
-                }
+                var messageDocument = new Message(message);
+                console.log(messageDocument);
+                ChatService.addMessage(messageDocument).then(function () {
+                    io.to('chat_' + message.chat).emit('new_message', message);
+                });
             });
 
             socket.on('disconnect', function() {
-                socket.leave('messages_' + socket.userId);
                 console.log('user disconnected');
             });
-
-            console.log('a user connected');
         });
     }
 };
@@ -53,14 +57,11 @@ function socketToRestifyReqPatcher(req, res, next) {
     return next();
 }
 
-function saveMessage() {
-
-}
-
-function checkMatch(message, userId) {
-    return true;
-}
-
-function throwDumbError() {
-    throw new Error('Dumb error');
+function joinChatRooms(socket) {
+    ChatService.findChats(socket.userId)
+        .then(function (chats) {
+            chats.forEach(function (chat) {
+                socket.join('chat_' + chat.id);
+            });
+        });
 }
