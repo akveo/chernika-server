@@ -3,7 +3,6 @@ var restify = require('restify');
 var q = require('q');
 var path = require('path');
 var sockets = require('./sockets');
-var fs = require('fs');
 initBasicComponents();
 
 module.exports.init = function() {
@@ -14,15 +13,6 @@ module.exports.init = function() {
 		.use(restify.queryParser());
 
     sockets.init(server.server);
-
-
-    server.get('/test', function(req, res, next) {
-        fs.readFile('test.html',function (err, data){
-            res.writeHead(200, {'Content-Type': 'text/html','Content-Length':data.length});
-            res.write(data);
-            res.end();
-        });
-    });
 
 	server.post("/user", UserController.login, AuthPolicy.login);
 
