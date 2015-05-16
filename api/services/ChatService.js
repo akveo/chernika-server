@@ -70,7 +70,7 @@ module.exports = {
 
         var userForInfoId = chat.users[0] == infoReceiverId ? chat.users[1] : chat.users[0];
         var info = {
-            chatId: chat._id
+            chat: chat._id
         };
 
         UserService.getInfo(userForInfoId)
