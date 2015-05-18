@@ -1,7 +1,6 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment');
 
 module.exports = {
 
@@ -13,15 +12,9 @@ module.exports = {
 				logger.error('Mongodb connection error: ' + err);
 			};
 		});
-		autoIncrement.initialize(mongoose.connection);
 		
 		//User
 		var userSchema = require('./models/User');
-		userSchema.plugin(autoIncrement.plugin, {
-			model: 'User',
-			field: 'id',
-			startAt: 1
-		});
 		userSchema.index({ "lastKnownPosition": "2dsphere" });
 		GLOBAL['User'] = mongoose.model('User', userSchema);
 		
