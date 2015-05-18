@@ -8,14 +8,18 @@ module.exports = {
         io = io(server);
 
         ioFilterHelper(io, socketToRestifyReqPatcher);
-        ioFilterHelper(io, restify.fullResponse());
         ioFilterHelper(io, restify.bodyParser());
         ioFilterHelper(io, restify.queryParser());
-        ioFilterHelper(io, AuthPolicy.checkSession);
-        
+        ioFilterHelper(io, authorize);
+
         io.on('connection', function(socket) {
             socket.userId = socket.request.params.userId;
-//            socket.userId = '554b7aff499b7a6935ae4564';
+
+            if (!(config.withoutPolicy || socket.userId)) {
+                socket.emit('socket_error', {error: 'Access not permitted'});
+                socket.disconnect()
+            }
+
             joinChatRooms(socket);
             
             socket.on('chats_info', function () {
@@ -60,6 +64,13 @@ function ioFilterHelper(io, filter) {
 
 function socketToRestifyReqPatcher(req, res, next) {
     req.params = req.params || {};
+    return next();
+}
+
+function authorize(req, res, next) {
+    if (!config.withoutPolicy) {
+        AuthPolicy._setSessionParams(req);
+    }
     return next();
 }
 

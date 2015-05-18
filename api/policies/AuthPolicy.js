@@ -11,20 +11,28 @@ module.exports = {
 		res.setHeader('Access-Token', encryptor.cipher(token));
 		res.send(204);
 	},
-	
+
 	checkSession: function (req, res, next) {
 
 		if (config.withoutPolicy){
 			return next();
 		}
-		try {
-			var token = JSON.parse(encryptor.decipher(req.headers['access-token']));
-			if (token.id && new Date().getTime() > token.ts) {
-				req.params.userId = token.id;
-				return next();
-			}
-		} catch(exc) { }
+
+        AuthPolicy._setSessionParams(req);
+
+        if (req.params.userId) {
+            return next()
+        }
 
 		res.send(403, "You are not permitted to perform this action.");
-	}
+	},
+
+    _setSessionParams: function (req) {
+        try {
+            var token = JSON.parse(encryptor.decipher(req.headers['access-token']));
+            if (token.id && new Date().getTime() > token.ts) {
+                req.params.userId = token.id;
+            }
+        } catch (exc) {}
+    }
 };
