@@ -7,71 +7,65 @@ module.exports = {
     init: function(server) {
         io = io(server);
 
-        ioFilterHelper(io, socketToRestifyReqPatcher);
-        ioFilterHelper(io, restify.bodyParser());
-        ioFilterHelper(io, restify.queryParser());
-        ioFilterHelper(io, authorize);
-
         io.on('connection', function(socket) {
-            socket.userId = socket.request.params.userId;
 
-            if (!(config.withoutPolicy || socket.userId)) {
-                socket.emit('socket_error', {error: 'Access not permitted'});
-                socket.disconnect()
+            if (!config.withoutPolicy) {
+                initializeUnauthorizedSocket(socket);
+            } else {
+                initializeAuthorizedSocket(socket)
             }
 
-            joinChatRooms(socket);
-            
-            socket.on('chats_info', function () {
-                ChatService.getChatsInfo(socket.userId)
-                    .then(function (chatsInfo) {
-                        socket.emit('chats_info', chatsInfo);
-                    })
-            });
-
-            socket.on('new_message', function(message) {
-                var messageDocument = new Message(message);
-                ChatService.addMessage(messageDocument).then(function () {
-                    io.to('chat_' + message.chat).emit('new_message', message);
-                });
-            });
-
-            socket.on('messages_during_interval', function (req) {
-                var until = req.until ? new Date(req.until) : new Date();
-                var from = new Date(req.from);
-                var chatId = mongoose.Types.ObjectId(req.chat);
-                ChatService.getMessagesDuringInterval(chatId, from, until)
-                    .then(function(messages) {
-                       socket.emit('messages_during_interval', messages);
-                    });
-            });
         });
     }
 };
 
+function initializeUnauthorizedSocket(socket) {
 
-function ioFilterHelper(io, filter) {
-    if (filter.constructor === Array) {
-        filter.forEach(function(filterItem) {
-            ioFilterHelper(io, filterItem);
-        })
-    } else {
-        io.use(function(socket, next) {
-            filter(socket.request, socket.request.res, next)
+    socket.emit('authorize');
+    socket.on('authorize', onAuthorize);
+
+    function onAuthorize(encryptedToken) {
+        socket.userId = AuthPolicy._getTokenId(encryptedToken);
+        if (socket.userId) {
+            initializeAuthorizedSocket(socket);
+        } else {
+            socket.emit('socket_error', {error: 'Access not permitted'});
+            socket.disconnect()
+        }
+    }
+}
+
+function initializeAuthorizedSocket(socket) {
+
+    joinChatRooms(socket);
+
+    socket.on('chats_info', onChatsInfo);
+    socket.on('new_message', onNewMessage);
+    socket.on('messages_during_interval', onMessagesDurinInterval);
+
+    function onChatsInfo() {
+        ChatService.getChatsInfo(socket.userId)
+            .then(function (chatsInfo) {
+                socket.emit('chats_info', chatsInfo);
+            })
+    }
+
+    function onNewMessage(message) {
+        var messageDocument = new Message(message);
+        ChatService.addMessage(messageDocument).then(function () {
+            io.to('chat_' + message.chat).emit('new_message', message);
         });
     }
-}
 
-function socketToRestifyReqPatcher(req, res, next) {
-    req.params = req.params || {};
-    return next();
-}
-
-function authorize(req, res, next) {
-    if (!config.withoutPolicy) {
-        AuthPolicy._setSessionParams(req);
+    function onMessagesDurinInterval(req) {
+        var until = req.until ? new Date(req.until) : new Date();
+        var from = new Date(req.from);
+        var chatId = mongoose.Types.ObjectId(req.chat);
+        ChatService.getMessagesDuringInterval(chatId, from, until)
+            .then(function(messages) {
+                socket.emit('messages_during_interval', messages);
+            });
     }
-    return next();
 }
 
 function joinChatRooms(socket) {

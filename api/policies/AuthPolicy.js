@@ -18,7 +18,7 @@ module.exports = {
 			return next();
 		}
 
-        AuthPolicy._setSessionParams(req);
+        req.params.userId = AuthPolicy._getTokenId(req.headers['access-token']);
 
         if (req.params.userId) {
             return next()
@@ -27,11 +27,11 @@ module.exports = {
 		res.send(403, "You are not permitted to perform this action.");
 	},
 
-    _setSessionParams: function (req) {
+    _getTokenId: function (encryptedToken) {
         try {
             var token = JSON.parse(encryptor.decipher(req.headers['access-token']));
             if (token.id && new Date().getTime() > token.ts) {
-                req.params.userId = token.id;
+                return token.id;
             }
         } catch (exc) {}
     }
