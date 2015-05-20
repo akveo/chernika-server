@@ -9,6 +9,7 @@ module.exports = {
 			ts: new Date().getTime() 
 		});
 		res.setHeader('Access-Token', encryptor.cipher(token));
+        res.setHeader('Access-Control-Expose-Headers', 'Access-Token');
 		res.send(204);
 	},
 
