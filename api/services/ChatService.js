@@ -196,6 +196,12 @@ module.exports = {
         return deferred.promise;
     },
 
+	create: function(userId1, userId2) {
+		var chat = new Chat();
+		chat.users = [userId1, userId2];
+		return this.save(chat);
+	},
+	
     save: function(chat) {
         var deferred = q.defer();
 
