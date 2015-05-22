@@ -30,7 +30,7 @@ module.exports = {
 
     _getTokenId: function (encryptedToken) {
         try {
-            var token = JSON.parse(encryptor.decipher(req.headers['access-token']));
+            var token = JSON.parse(encryptor.decipher(encryptedToken));
             if (token.id && new Date().getTime() > token.ts) {
                 return token.id;
             }

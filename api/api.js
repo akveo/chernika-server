@@ -14,6 +14,8 @@ module.exports.init = function() {
 
     sockets.init(server.server);
 
+    server.on('MethodNotAllowed', CORSPolicy.unknownMethodHandler);
+
 	server.post("/user", UserController.login, AuthPolicy.login);
 
     server.use(AuthPolicy.checkSession);
