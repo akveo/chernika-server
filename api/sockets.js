@@ -21,7 +21,6 @@ module.exports = {
 
 function initializeUnauthorizedSocket(socket) {
 
-    socket.emit('authorize');
     socket.on('authorize', onAuthorize);
 
     function onAuthorize(encryptedToken) {
@@ -29,7 +28,7 @@ function initializeUnauthorizedSocket(socket) {
         if (socket.userId) {
             initializeAuthorizedSocket(socket);
         } else {
-            socket.emit('socket_error', {error: 'Access not permitted'});
+            socket.emit('socket_error', {msg: 'Access not permitted', type: 'AuthError'});
             socket.disconnect()
         }
     }
