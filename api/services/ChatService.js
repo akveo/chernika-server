@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 module.exports = {
 
     find: function(id) {
-        return this.findByFilter({ id: id });
+        return this.findByFilter({ _id: id });
     },
 
     findByFilter: function(filter) {

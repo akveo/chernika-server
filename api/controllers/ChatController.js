@@ -23,7 +23,12 @@ module.exports = {
 		if (!req.params.chatId) {
 			return res.send(400, 'Incorrect parameters');
 		}
-		res.send(chats[req.params.chatId] || {});
+        ChatService.find(req.params.chatId).then(function (chat) {
+           res.send(chat);
+        }, function (error) {
+            logger.error('find: ' + error);
+            res.send(500, 'Internal error');
+        });
 	},
 	
 	findMessages: function (req, res) {
