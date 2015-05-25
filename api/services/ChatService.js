@@ -1,5 +1,6 @@
 
 var q = require('q');
+var mongoose = require('mongoose');
 
 module.exports = {
 
@@ -88,13 +89,17 @@ module.exports = {
         return deferred.promise;
     },
 
+    getMessages: function(chatId) {
+        return ChatService.getMessagesDuringInterval(chatId, new Date(null), new Date());
+    },
+
     getMessagesDuringInterval: function (chatId, from, until) {
         var deferred = q.defer();
 
         Message.aggregate([
             {
                 $match: {
-                    chat: chatId,
+                    chat: mongoose.Types.ObjectId(chatId),
                     created: {
                         $gte: from,
                         $lte: until

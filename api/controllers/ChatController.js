@@ -30,7 +30,12 @@ module.exports = {
 		if (!req.params.chatId) {
 			return res.send(400, 'Incorrect parameters');
 		}
-		res.send([]);
+        ChatService.getMessages(req.params.chatId).then(function(messages) {
+            res.send(messages);
+        }, function (error) {
+            logger.error('findMessages: ' + error);
+            res.send(500, 'Internal error');
+        })
 	},
 	
 	createMessage: function (req, res) {
