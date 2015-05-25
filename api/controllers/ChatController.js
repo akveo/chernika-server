@@ -10,7 +10,13 @@ var chats = [{
 module.exports = {
     
 	findAll: function(req, res) {
-		res.send(chats);
+        ChatService.getChatsInfo(req.params.userId)
+            .then(function (chatsInfo) {
+                res.send(chatsInfo);
+            }, function (error) {
+                logger.error('findAll: ' + error);
+                res.send(500, 'Internal error');
+            })
 	},
 	
 	find: function(req, res) {

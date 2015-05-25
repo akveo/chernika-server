@@ -38,16 +38,8 @@ function initializeAuthorizedSocket(socket) {
 
     joinChatRooms(socket);
 
-    socket.on('chats_info', onChatsInfo);
     socket.on('new_message', onNewMessage);
     socket.on('messages_during_interval', onMessagesDurinInterval);
-
-    function onChatsInfo() {
-        ChatService.getChatsInfo(socket.userId)
-            .then(function (chatsInfo) {
-                socket.emit('chats_info', chatsInfo);
-            })
-    }
 
     function onNewMessage(message) {
         var messageDocument = new Message(message);
