@@ -68,19 +68,22 @@
             sender:  undefined,
             chat:  undefined,
             text: 'Фраза девушки, которая уложила весь автосервис: - "Я когда даю в зад, у меня не горит лампочка". Ответная фраза приемщика, от которой все полегли на месте: - "Понятно, а с машиной то что?" ',
-            created: new Date()
+            created: new Date(),
+            wasRead: true
         },
         {
             sender:  undefined,
             chat:  undefined,
             text: 'Мужик приходит к врачу, снимает штаны, а там член 1 см, врач задумчиво:\n-жалуетесь?\n-нет бл...дь хвастаюсь!',
-            created: new Date()
+            created: new Date(),
+            wasRead: true
         },
         {
             sender:  undefined,
             chat:  undefined,
             text: '- Изя, у вас чай есть?\n Нет.\n- А кофе?\n-Чай есть.',
-            created: new Date()
+            created: new Date(),
+            wasRead: true
         },
         {
             sender:  undefined,
@@ -161,7 +164,8 @@
                     sender: mIndex % 2 == 0 ? chat.users[0] : chat.users[1],
                     chat: chat._id,
                     created: message.created,
-                    text: message.text
+                    text: message.text,
+                    wasRead: message.wasRead
                 });
                 messageModel.save(function(err, mm) {
                     if (err) {
