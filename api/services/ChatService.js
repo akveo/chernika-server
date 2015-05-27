@@ -108,7 +108,7 @@ module.exports = {
             },
             {
                 "$sort": {
-                    "created": -1
+                    "created": 1
                 }
             },
             {
