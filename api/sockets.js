@@ -44,6 +44,7 @@ function initializeAuthorizedSocket(socket) {
     function onNewMessage(message) {
         var messageDocument = new Message(message);
         ChatService.addMessage(messageDocument).then(function () {
+            message._id = messageDocument._id;
             io.to('chat_' + message.chat).emit('new_message', message);
         });
     }
