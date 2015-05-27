@@ -8,7 +8,6 @@ module.exports = {
         io = io(server);
 
         io.on('connection', function(socket) {
-
             if (!config.withoutPolicy) {
                 initializeUnauthorizedSocket(socket);
             } else {
@@ -21,6 +20,7 @@ module.exports = {
 
 function initializeUnauthorizedSocket(socket) {
 
+    socket.emit('authorize');
     socket.on('authorize', onAuthorize);
 
     function onAuthorize(encryptedToken) {
