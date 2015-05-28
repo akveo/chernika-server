@@ -34,6 +34,21 @@ module.exports = {
         return deferred.promise;
     },
 
+    markMessageRead: function (mId) {
+        var deferred = q.defer();
+
+        Message.findOneAndUpdate(mId, { $set: { wasRead: true }}, function(err, message) {
+            if (!err) {
+                deferred.resolve(message);
+            } else {
+                logger.info('Cannot update message: ', err);
+                deferred.reject(err);
+            }
+        });
+
+        return deferred.promise;
+    },
+
     findChats: function (userId) {
         var deferred = q.defer();
 
@@ -117,7 +132,8 @@ module.exports = {
                     "text": 1,
                     "created": 1,
                     "sender": 1,
-                    "chat": 1
+                    "chat": 1,
+                    "wasRead": 1
                 }
             }
         ], function(err, messages) {

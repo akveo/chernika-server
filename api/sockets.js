@@ -40,6 +40,7 @@ function initializeAuthorizedSocket(socket) {
 
     socket.on('new_message', onNewMessage);
     socket.on('messages_during_interval', onMessagesDurinInterval);
+    socket.on('message_read', onMessageRead);
 
     function onNewMessage(message) {
         var messageDocument = new Message(message);
@@ -57,6 +58,12 @@ function initializeAuthorizedSocket(socket) {
             .then(function(messages) {
                 socket.emit('messages_during_interval', messages);
             });
+    }
+
+    function onMessageRead(message) {
+        ChatService.markMessageRead(message._id).then(function (updatedMessage) {
+            io.to('chat_' + updatedMessage.chat).emit('message_read', updatedMessage);
+        });
     }
 }
 
