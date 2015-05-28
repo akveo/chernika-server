@@ -189,7 +189,8 @@ module.exports = {
                     "text": 1,
                     "created": 1,
                     "sender": 1,
-                    "chat": 1
+                    "chat": 1,
+                    "wasRead": 1
                 }
             }
         ], function(err, m) {
