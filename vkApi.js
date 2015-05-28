@@ -18,7 +18,7 @@ module.exports = {
 	checkAccessToken: function(userId, accessToken) {
 		var deferred = q.defer();
 		vk.request('users.get', {'access_token' : accessToken}, function(r) {
-			logger.log(r.response);
+			logger.error(r.response);
 			if (!r.error && r.response && r.response.length > 0) {
 				if (r.response[0].id == userId) {
 					deferred.resolve();
