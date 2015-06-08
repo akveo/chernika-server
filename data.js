@@ -96,18 +96,12 @@
 
 
     function clear() {
-        User.remove(function(err) {
-            err && console.log(err);
-        });
-        Message.remove(function (err) {
-            err && console.log(err);
-        });
-        Chat.remove(function (err) {
-            err && console.log(err);
-        });
-        Match.remove(function (err) {
-            err && console.log(err);
-        });
+        return q.all([
+            modelRemovePromise(User),
+            modelRemovePromise(Message),
+            modelRemovePromise(Chat),
+            modelRemovePromise(Match)
+        ]);
     }
 
     function saveUsers() {
@@ -181,18 +175,33 @@
         return deferred.promise;
     }
 
+    function modelRemovePromise(model) {
+        var deferred = q.defer();
+
+        model.remove(function (err) {
+            if(err) {
+                console.log(err);
+                deferred.reject(err);
+            } else {
+                deferred.resolve();
+            }
+        });
+
+        return deferred.promise;
+    }
+
 
     function init() {
         models.init();
-        clear();
-        console.log('Db cleared');
-        saveUsers()
+        clear()
+            .then(saveUsers)
             .then(saveChats)
             .then(saveMessages)
             .then(function () {
                 console.log('Db populated');
                 process.exit();
             }, console.log);
+
     }
 
     init();
