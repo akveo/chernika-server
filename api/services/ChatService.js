@@ -37,12 +37,13 @@ module.exports = {
     markMessageRead: function (mId) {
         var deferred = q.defer();
 
-        Message.findOneAndUpdate(mId, { $set: { wasRead: true }}, function(err, message) {
-            if (!err) {
-                deferred.resolve(message);
-            } else {
+        Message.findByIdAndUpdate(mId, { $set: { wasRead: true }}, { new: true }, function (err, msg) {
+            if (err) {
+                console.log(err)
                 logger.info('Cannot update message: ', err);
                 deferred.reject(err);
+            } else {
+                deferred.resolve(msg)
             }
         });
 
@@ -180,6 +181,9 @@ module.exports = {
                     },
                     "sender": {
                         "$first": "$sender"
+                    },
+                    "wasRead": {
+                        "$first": "$wasRead"
                     }
                 }
             },

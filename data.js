@@ -69,14 +69,14 @@
             chat:  undefined,
             text: 'Фраза девушки, которая уложила весь автосервис: - "Я когда даю в зад, у меня не горит лампочка". Ответная фраза приемщика, от которой все полегли на месте: - "Понятно, а с машиной то что?" ',
             created: new Date(),
-            wasRead: true
+            wasRead: false
         },
         {
             sender:  undefined,
             chat:  undefined,
             text: 'Мужик приходит к врачу, снимает штаны, а там член 1 см, врач задумчиво:\n-жалуетесь?\n-нет бл...дь хвастаюсь!',
             created: new Date(),
-            wasRead: true
+            wasRead: false
         },
         {
             sender:  undefined,
@@ -89,7 +89,8 @@
             sender:  undefined,
             chat:  undefined,
             text: 'Мама говорит Наташе Ростовой:\n- Наташа, что такое, вы женаты с поручиком уже пятый год, а у вас все еще нет детей?\n- Мама! Что вы?! Чтобы я глотала эту гадость?!',
-            created: new Date()
+            created: new Date(),
+            wasRead: true
         }
     ];
 
