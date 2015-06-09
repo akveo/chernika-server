@@ -3,6 +3,7 @@ var restify = require('restify');
 var q = require('q');
 var path = require('path');
 var sockets = require('./sockets');
+var vkApi = require('../vkApi');
 initBasicComponents();
 
 module.exports.init = function() {
@@ -35,6 +36,8 @@ module.exports.init = function() {
 	server.get("/chats/:chatId", ChatController.find);
 	server.get("/chats/:chatId/messages", ChatController.findMessages);
 	server.post("/chats/:chatId/messages", ChatController.createMessage);
+
+    vkApi.init();
 	 
 	var deferred = q.defer();
 	var port = config.apiPort;
