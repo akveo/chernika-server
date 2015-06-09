@@ -8,7 +8,7 @@
 
     var users = [
         {
-            bdate: '10.10.1984',
+            age: 20,
             sex: 2,
             firstName: 'Павел',
             vkId: 1,
@@ -26,7 +26,7 @@
             lastKnownPosition: {}
         },
         {
-            bdate: '13.11.1994',
+            age: 20,
             sex: 2,
             firstName: 'Андрей',
             vkId: 17197491,
@@ -44,7 +44,7 @@
             lastKnownPosition: {}
         },
         {
-            bdate: '4.11.1990',
+            age: 20,
             sex: 2,
             firstName: 'Владимир',
             vkId: 2288280,

@@ -14,11 +14,10 @@ module.exports = {
 				user = user || new User();
 				return q.all([vkApi.login(vkId, accessToken), self.getUserPhotos(vkId)])
 					.spread(function(vkUser, photos) {
-                        console.log(vkUser);
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
-						user.bdate = vkUser.bdate;
+						user.age =  vkBdateToAge(vkUser.bdate);
 						user.photo = photos.length > 0 ? photos[0] : null;
 						
 						if (user.isNew) {
@@ -146,4 +145,22 @@ function countCrop(image) {
 		crop.y = (image.height - crop.height) / 2;
 	}
 	return crop;
+}
+
+
+//Shit, ok for now
+function vkBdateToAge(bdate) {
+    bdate = bdate || '';
+
+    var splittedBdate = bdate.split('.').map(function (el) {
+        return parseInt(el);
+    });
+
+    if (splittedBdate.length == 1) {
+        splittedBdate = [13, 11, 1970];
+    } else if (splittedBdate.length == 2) {
+        splittedBdate[2] = 1970;
+    }
+
+    return new Date(new Date - new Date(splittedBdate[2], splittedBdate[1] - 1, splittedBdate[0])).getFullYear()-1970
 }

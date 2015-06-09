@@ -5,7 +5,7 @@ var userSchema = new Schema({
 	vkId: Number, 
 	firstName: String,
 	sex: Number, 
-	bdate: String,
+	age: Number,
 	lastKnownPosition: {
 		lon: Number,
 		lat: Number
