@@ -2,6 +2,7 @@
 var q = require('q');;
 var VK = require('vksdk');
 var vk = new VK(config.vkSettings);
+var at;
 
 module.exports = {
 	
@@ -9,6 +10,7 @@ module.exports = {
 		var self = this;
 		return this.checkAccessToken(userId, accessToken)
 			.then(function() {
+                at = accessToken;
 				return self.getUserInfo(userId);
 			}, function(err) {
 				logger.error('Check access token: ' + err);
@@ -33,7 +35,7 @@ module.exports = {
 	
 	getUserInfo: function(id) {
 		var deferred = q.defer();
-		vk.request('users.get', {'user_id' : id, 'fields': 'id, first_name, sex, bdate'}, function(r) {
+		vk.request('users.get', {access_token: at, 'user_id' : id, 'fields': 'id, first_name, sex, bdate'}, function(r) {
 			if (!r.error && r.response && r.response.length > 0) {
 				if (!r.response[0].deactivated) {
 					deferred.resolve(r.response[0]);

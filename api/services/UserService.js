@@ -14,6 +14,7 @@ module.exports = {
 				user = user || new User();
 				return q.all([vkApi.login(vkId, accessToken), self.getUserPhotos(vkId)])
 					.spread(function(vkUser, photos) {
+                        console.log(vkUser);
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
