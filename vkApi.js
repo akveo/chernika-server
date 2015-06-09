@@ -16,21 +16,23 @@ module.exports = {
 				logger.error('Check access token: ' + err);
 			});
 	},
+	
+	checkAccessToken: function(userId, accessToken) {
+		var deferred = q.defer();
+		vk.request('users.get', {'access_token' : accessToken}, function(r) {
 
-    checkAccessToken: function(userId, accessToken) {
-        var deferred = q.defer();
-        this.secureRequest('secure.checkToken', {'token' : accessToken}, function(r) {
-            if (!r.error && r.response) {
-                if (r.response.user_id == userId) {
-                    deferred.resolve();
-                } else {
-                    deferred.reject('Incorrect access token for user: %d', userId);
-                }
-            } else {
-                deferred.reject(r.error);
-            }
-        });
-        return deferred.promise;
+            deferred.resolve();
+//			if (!r.error && r.response && r.response.length > 0) {
+//				if (r.response[0].id == userId) {
+//					deferred.resolve();
+//				} else {
+//					deferred.reject('Incorrect access token for user: %d', userId);
+//				}
+//			} else {
+//				deferred.reject(r.error);
+//			}
+		});
+		return deferred.promise;
 	},
 	
 	getUserInfo: function(id) {
@@ -59,29 +61,5 @@ module.exports = {
 			}
 		});
 		return deferred.promise;
-	},
-
-    secureRequest: function(_method, _requestParams, _response) {
-        vk.setSecureRequests(true);
-        vk.request(_method, _requestParams, _response);
-        vk.setSecureRequests(false);
-    },
-
-    setServerToken: function() {
-        var deferred = q.defer();
-        vk.requestServerToken(function (res) {
-            vk.setToken(res.access_token);
-            deferred.resolve(res.access_token);
-        });
-        return deferred.promise;
-    },
-
-    init: function () {
-        var deferred = q.defer;
-        this.setServerToken()
-            .then(function () {
-               deferred.resolve();
-            });
-        return deferred.promise;
-    }
-};
+	}
+}
