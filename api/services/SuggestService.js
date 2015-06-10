@@ -3,40 +3,53 @@ var q = require('q');
 
 module.exports = {
 
-	findByGeo: function (userId, lon, lat) {
+    findByGeo: function (userId, lon, lat) {
+        var deferred = q.defer();
 
-		return UserService.find(userId)
-			.then(function(user) {
-				if (!user) return [];
-				
-				lon = parseFloat(lon);
-				lat = parseFloat(lat);
-				user.lastKnownPosition = {
-					lon: lon, 
-					lat: lat
-				};
-				UserService.save(user);
-				
-				var maxDistance = user.settings.distance || 100;
+        UserService.find(userId)
+            .then(function(user) {
+                if (!user) {
+                    deferred.resolve([]);
+                    return;
+                }
+                lon = parseFloat(lon);
+                lat = parseFloat(lat);
+                user.lastKnownPosition = {
+                    lon: lon,
+                    lat: lat
+                };
+
+                UserService.save(user);
+
+                var maxDistance = user.settings.distance || 100;
                 var sex = user.settings.show ? [user.settings.show] : [1, 2];
 
-				return User.geoNear([lon, lat], {
-						maxDistance: maxDistance / 6371, // km to radians
-						distanceMultiplier: 6371, // radians to km
-						spherical: true,
+                Match.find({user: userId}, function (err, matches) {
+                    var ids = matches.map(function (m) {
+                        return m.target;
+                    });
+
+                    ids.push(user._id);
+
+                    User.geoNear([lon, lat], {
+                        maxDistance: maxDistance / 6371, // km to radians
+                        distanceMultiplier: 6371, // radians to km
+                        spherical: true,
                         query: {
-                            _id: { $ne: user._id },
+                            _id: { $nin: ids },
                             sex: { $in: sex },
                             age: {
                                 $gte: user.settings.minAge,
                                 $lte: user.settings.maxAge
                             }
                         }
-					})
-					.then(function (users) {
-						return users;
-					});
-			});
+                    }, function (err, users) {
+                        deferred.resolve(users)
+                    })
+                })
+            });
+
+        return deferred.promise;
 	},
 	
 	dislike: function (userId, targetId) {
