@@ -18,10 +18,20 @@ module.exports = {
 				UserService.save(user);
 				
 				var maxDistance = user.settings.distance || 100;
+                var sex = user.settings.show ? [user.settings.show] : [1, 2];
+
 				return User.geoNear([lon, lat], {
 						maxDistance: maxDistance / 6371, // km to radians
 						distanceMultiplier: 6371, // radians to km
-						spherical: true
+						spherical: true,
+                        query: {
+                            _id: { $ne: user._id },
+                            sex: { $in: sex },
+                            age: {
+                                $gte: user.settings.minAge,
+                                $lte: user.settings.maxAge
+                            }
+                        }
 					})
 					.then(function (users) {
 						return users;
