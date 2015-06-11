@@ -8,7 +8,7 @@ module.exports = {
 
         lon = parseFloat(lon);
         lat = parseFloat(lat);
-        return UserService.update(userId,{ lastKnownPosition: { lon: lon, lat: lat }})
+        return UserService.update(userId,{ lastKnownPosition: { type:'Point', coordinates: [lon, lat] }})
             .then(self._getFindByGeoParams)
             .then(self._findByGeo);
     },
@@ -21,8 +21,7 @@ module.exports = {
             sex: user.settings.show ? [user.settings.show] : [1, 2],
             minAge: user.settings.minAge,
             maxAge: user.settings.maxAge,
-            lon: user.lastKnownPosition.lon,
-            lat: user.lastKnownPosition.lat
+            position: user.lastKnownPosition
         };
 
         getLikedUsers(user._id)
@@ -38,18 +37,18 @@ module.exports = {
     _findByGeo: function (params) {
         var deferred = q.defer();
 
-        User.geoNear([params.lon, params.lat], {
+        User.geoNear(params.position, {
             maxDistance: params.maxDistance / 6371, // km to radians
             distanceMultiplier: 6371, // radians to km
-            spherical: true
-//            query: {
-//                _id: { $nin: params.likedUsers },
-//                sex: { $in: params.sex },
-//                age: {
-//                    $gte: params.minAge,
-//                    $lte: params.maxAge
-//                }
-//            }
+            spherical: true,
+            query: {
+                _id: { $nin: params.likedUsers },
+                sex: { $in: params.sex },
+                age: {
+                    $gte: params.minAge,
+                    $lte: params.maxAge
+                }
+            }
         }, function (err, users) {
             deferred.resolve(users)
         });
