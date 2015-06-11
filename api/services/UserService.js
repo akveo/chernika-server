@@ -65,6 +65,21 @@ module.exports = {
 				return user && user.settings;
 			});
 	},
+
+    update: function (uId, update) {
+        var deferred = q.defer();
+
+        User.findByIdAndUpdate(uId, { $set: update }, { new: true }, function (err, res) {
+            if (err) {
+                logger.info('Cannot update user: ', err);
+                deferred.reject(err);
+            } else {
+                deferred.resolve(res._doc)
+            }
+        });
+
+        return deferred.promise;
+    },
 	
 	updateSettings: function(params) {
 		var self = this;

@@ -4,53 +4,60 @@ var q = require('q');
 module.exports = {
 
     findByGeo: function (userId, lon, lat) {
+        var self = this;
+
+        lon = parseFloat(lon);
+        lat = parseFloat(lat);
+        return UserService.update(userId,{ lastKnownPosition: { lon: lon, lat: lat }})
+            .then(self._getFindByGeoParams)
+            .then(self._findByGeo);
+    },
+
+    _getFindByGeoParams: function(user) {
         var deferred = q.defer();
 
-        UserService.find(userId)
-            .then(function(user) {
-                if (!user) {
-                    deferred.resolve([]);
-                    return;
-                }
-                lon = parseFloat(lon);
-                lat = parseFloat(lat);
-                user.lastKnownPosition = {
-                    lon: lon,
-                    lat: lat
-                };
+        var params = {
+            maxDistance: user.settings.distance || 100,
+            sex: user.settings.show ? [user.settings.show] : [1, 2],
+            minAge: user.settings.minAge,
+            maxAge: user.settings.maxAge,
+            lon: user.lastKnownPosition.lon,
+            lat: user.lastKnownPosition.lat
+        };
 
-                UserService.save(user);
-
-                var maxDistance = user.settings.distance || 100;
-                var sex = user.settings.show ? [user.settings.show] : [1, 2];
-
-                Match.find({user: userId}, function (err, matches) {
-                    var ids = matches.map(function (m) {
-                        return m.target;
-                    });
-
-                    ids.push(user._id);
-
-                    User.geoNear([lon, lat], {
-                        maxDistance: maxDistance / 6371, // km to radians
-                        distanceMultiplier: 6371, // radians to km
-                        spherical: true,
-                        query: {
-                            _id: { $nin: ids },
-                            sex: { $in: sex },
-                            age: {
-                                $gte: user.settings.minAge,
-                                $lte: user.settings.maxAge
-                            }
-                        }
-                    }, function (err, users) {
-                        deferred.resolve(users)
-                    })
-                })
+        getLikedUsers(user._id)
+            .then(function(uIds) {
+                uIds.push(user._id);
+                params.likedUsers = uIds;
+                deferred.resolve(params);
             });
 
         return deferred.promise;
-	},
+    },
+
+    _findByGeo: function (params) {
+        var deferred = q.defer();
+
+        User.geoNear([params.lon, params.lat], {
+            maxDistance: params.maxDistance / 6371, // km to radians
+            distanceMultiplier: 6371, // radians to km
+            spherical: true
+//            query: {
+//                _id: { $nin: params.likedUsers },
+//                sex: { $in: params.sex },
+//                age: {
+//                    $gte: params.minAge,
+//                    $lte: params.maxAge
+//                }
+//            }
+        }, function (err, users) {
+            deferred.resolve(users)
+        });
+
+        return deferred.promise;
+    },
+
+    getLikedUsers: getLikedUsers,
 	
 	dislike: function (userId, targetId) {
 		var match = new Match();
@@ -101,4 +108,17 @@ module.exports = {
 		});
 		return deferred.promise;
 	}
- }
+ };
+
+function getLikedUsers(userId) {
+    var deferred = q.defer();
+
+    Match.find({user: userId}, function (err, matches) {
+        var userIds = matches.map(function (m) {
+            return m.target;
+        });
+        deferred.resolve(userIds);
+    });
+
+    return deferred.promise;
+}
