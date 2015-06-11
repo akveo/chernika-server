@@ -23,7 +23,7 @@
                 minAge: 18,
                 maxAge: 34,
                 show: 1 },
-            lastKnownPosition: {}
+            lastKnownPosition: { coordinates: [27.585562799999998,53.9188567], type: 'Point' }
         },
         {
             age: 20,
@@ -41,7 +41,7 @@
                 minAge: 18,
                 maxAge: 34,
                 show: 1 },
-            lastKnownPosition: {}
+            lastKnownPosition: { coordinates: [27.585562799999998,53.9188567], type: 'Point' }
         },
         {
             age: 20,
@@ -59,7 +59,7 @@
                 minAge: 18,
                 maxAge: 34,
                 show: 1 },
-            lastKnownPosition: {}
+            lastKnownPosition: { coordinates: [27.585562799999998,53.9188567], type: 'Point' }
         }
     ];
 
