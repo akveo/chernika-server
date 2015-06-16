@@ -2,6 +2,7 @@
 var q = require('q');
 var _ = require('underscore')
 var vkApi = require('../../vkApi');
+var imagesUtil = require('../images');
 
 module.exports = {
 
@@ -116,7 +117,8 @@ module.exports = {
 			.then(function(user) {
 				if (!user) return {};
 				return self.getUserPhotos(user.vkId)
-					.then(function(photos) {					
+					.then(function(photos) {
+                        console.log(photos);
 						return {
 							firstName: user.firstName,
 							sex: user.sex,
@@ -128,9 +130,11 @@ module.exports = {
 	},
 	
 	getUserPhotos: function (userVkId, photoType) {
-		
-		return vkApi.getUserPhotos(userVkId)
-			.then(function(photos) {						
+		var deferred = q.defer();
+
+		vkApi.getUserPhotos(userVkId)
+			.then(function(photos) {
+                var cropPromises = [];
 				photos = _.map(photos, function (i) {
 					return _.find(i.sizes, function(j) { 
 						return j.type == (photoType || 'z') 
@@ -138,10 +142,19 @@ module.exports = {
 				});
 				photos = _.filter(photos, function (i) { return i && i.width; });
 				_.each(photos, function (i) { 
-					i.crop = countCrop(i);
+					cropPromises.push(imagesUtil.countCrop(i));
 				});
-				return photos;
+				q.all(cropPromises)
+                    .then(function (result) {
+                        console.log(result);
+                        deferred.resolve(result)
+                    }, function(err) {
+                        console.log('err');
+                        console.log(err);
+                    });
 			});
+
+        return deferred.promise;
 	}
 }
 
