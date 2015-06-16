@@ -26,26 +26,27 @@ module.exports = {
                     var cropCenter = { x: crop.x + crop.width/2, y: crop.y + crop.height/2 };
                     var centersDiff = { x: cropCenter.x - faceCenter.x, y: cropCenter.y - faceCenter.y };
 
-                    var adjust = {
-                        x: crop.x == 0 ? 0 : crop.x - centersDiff.x,
-                        y: crop.y == 0 ? 0 : crop.y - centersDiff.y
-                    };
+                    if (crop.y === 0) {
+                        var newCropX = crop.x - centersDiff.x;
 
-                    if (adjust.x < 0) {
-                        adjust.x = 0
-                    } else if (adjust.x + crop.width > image.width) {
-                        adjust.x = image.width - crop.width;
+                        if (newCropX < 0) {
+                            newCropX = 0
+                        } else if (newCropX + crop.width > image.width) {
+                            newCropX = image.width - crop.width;
+                        }
+
+                        crop.x = newCropX;
+                    } else if (crop.x === 0) {
+                        var newCropY = crop.y - centersDiff.y;
+
+                        if (newCropY < 0) {
+                            newCropY = 0
+                        } else if (newCropY + crop.height > image.height) {
+                            newCropY = image.height - crop.height;
+                        }
+
+                        crop.y = newCropY;
                     }
-
-                    if (adjust.y < 0) {
-                        adjust.y = 0
-                    } else if (adjust.y + crop.height > image.height) {
-                        adjust.y = image.height - crop.height;
-                    }
-
-                    crop.x = adjust.x;
-                    crop.y = adjust.y;
-                    crop.faceCenter = faceCenter.x;
                 }
                 image.crop = crop;
                 return image;
