@@ -20,7 +20,7 @@ module.exports = {
 						user.sex = vkUser.sex;
 						user.age =  vkBdateToAge(vkUser.bdate);
 						user.photo = photos.length > 0 ? photos[0] : null;
-						
+
 						if (user.isNew) {
 							user.initSettings();
 						}

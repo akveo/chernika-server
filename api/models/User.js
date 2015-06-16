@@ -6,7 +6,7 @@ var userSchema = new Schema({
 	firstName: String,
 	sex: Number, 
 	age: Number,
-	lastKnownPosition: { type: { type: String }, coordinates: [Number] },
+	lastKnownPosition: {type: { type: String, default: 'Point' }, coordinates: {type: Array, default: [0,0]}},
 	settings: {
 		enableFriends: Boolean,
 		distance: Number,
