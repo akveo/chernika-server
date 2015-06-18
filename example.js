@@ -28,4 +28,4 @@ s.on('load', function(matrix){
     });
 });
 
-request.get('https://pp.vk.me/c621419/v621419967/1b22a/RA5omaxL9Og.jpg').pipe(s);
+request.get('https://pp.vk.me/c412419/v412419928/7fcd/_kSHJn2Hr3s.jpg').pipe(s);

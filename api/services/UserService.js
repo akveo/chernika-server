@@ -118,7 +118,6 @@ module.exports = {
 				if (!user) return {};
 				return self.getUserPhotos(user.vkId)
 					.then(function(photos) {
-                        console.log(photos);
 						return {
 							firstName: user.firstName,
 							sex: user.sex,
@@ -141,16 +140,15 @@ module.exports = {
 					}); 
 				});
 				photos = _.filter(photos, function (i) { return i && i.width; });
-				_.each(photos, function (i) { 
+				_.each(photos, function (i) {
 					cropPromises.push(imagesUtil.countCrop(i));
 				});
 				q.all(cropPromises)
                     .then(function (result) {
-                        console.log(result);
                         deferred.resolve(result)
                     }, function(err) {
-                        console.log('err');
-                        console.log(err);
+                        logger.info('Cannot get user photos', err);
+                        deferred.reject(err);
                     });
 			});
 

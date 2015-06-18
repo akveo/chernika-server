@@ -2,6 +2,9 @@ var cv = require('opencv');
 var request = require('request');
 var q = require('q');
 
+var openCvInProgress = false;
+var detectQueue = [];
+
 module.exports = {
     countCrop: function (image) {
         var crop = {};
@@ -56,13 +59,29 @@ module.exports = {
     findFace: function (img) {
         var deferred = q.defer();
 
-        img.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
-            if (err) {
-                logger.info('Could not find faces on image', err);
-                deferred.reject(err);
-            }
-            deferred.resolve(faces[0]);
-        });
+        function runDetectAlgorithm() {
+            img.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
+                if (err) {
+                    logger.info('Could not find faces on image', err);
+                    deferred.resolve();
+                } else {
+                    deferred.resolve(faces[0]);
+                }
+
+                if (detectQueue.length) {
+                    detectQueue.shift()();
+                } else {
+                    openCvInProgress = false;
+                }
+            });
+        }
+
+        if (openCvInProgress) {
+            detectQueue.push(runDetectAlgorithm);
+        } else {
+            openCvInProgress = true;
+            runDetectAlgorithm();
+        }
 
         return deferred.promise;
     },
@@ -73,9 +92,14 @@ module.exports = {
 
         request.get(url).pipe(imgStream);
 
-        imgStream.on('load', function(matrix){
+        imgStream.on('load', function(matrix) {
            deferred.resolve(matrix);
         });
+
+        imgStream.on('error', function(err) {   //hope it works :)
+            deferred.reject(err);
+        });
+
 
         return deferred.promise;
     }
