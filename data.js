@@ -5,64 +5,9 @@
     var UserService = require('./api/services/UserService');
     var ChatService = require('./api/services/UserService');
     var q = require('q');
+    var vkApi = require('./vkApi.js');
 
-    var users = [
-        {
-            age: 20,
-            sex: 2,
-            firstName: 'Павел',
-            vkId: 1,
-            photo:
-            { src: 'http://cs540108.vk.me/c7003/v7003978/1ed9/yoeGXOWmW-M.jpg',
-                width: 731,
-                height: 1000,
-                crop: { width: 731, x: 0, height: 0, y: 500 } },
-            settings:
-            { enableFriends: true,
-                distance: 100,
-                minAge: 18,
-                maxAge: 34,
-                show: 1 },
-            lastKnownPosition: { coordinates: [27.585562799999998,53.9188567], type: 'Point' }
-        },
-        {
-            age: 20,
-            sex: 2,
-            firstName: 'Андрей',
-            vkId: 17197491,
-            photo:
-            { src: 'http://cs403620.vk.me/v403620491/8a2b/st6iwD2rYOI.jpg',
-                width: 765,
-                height: 1024,
-                crop: { width: 765, x: 0, height: 0, y: 512 } },
-            settings:
-            { enableFriends: true,
-                distance: 100,
-                minAge: 18,
-                maxAge: 34,
-                show: 1 },
-            lastKnownPosition: { coordinates: [27.585562799999998,53.9188567], type: 'Point' }
-        },
-        {
-            age: 20,
-            sex: 2,
-            firstName: 'Владимир',
-            vkId: 2288280,
-            photo:
-            { src: 'http://cs614720.vk.me/v614720280/e299/Cl7gO4PQ5KI.jpg',
-                width: 671,
-                height: 1024,
-                crop: { width: 671, x: 0, height: 0, y: 512 } },
-            settings:
-            { enableFriends: true,
-                distance: 100,
-                minAge: 18,
-                maxAge: 34,
-                show: 1 },
-            lastKnownPosition: { coordinates: [27.585562799999998,53.9188567], type: 'Point' }
-        }
-    ];
-
+    var users = [1, 2288280, 17197491, 58513866, 15037767, 14559720, 10249179, 18802294, 26139084, 21162999, 203060419, 3863981, 6135811, 10846589, 16704573];
     var messages = [
         {
             sender:  undefined,
@@ -108,23 +53,23 @@
         var userIds = [];
         var deferred = q.defer();
 
-        users.forEach(function (user) {
-            var userModel = new User(user);
-            userModel.save(function (err, um) {
-                if (err) {
-                    deferred.reject(err);
-                } else {
-                    userIds.push(um._id);
+        users.forEach(function (vkId) {
+            UserService.login(vkId)
+                .then(function (userId) {
+                    userIds.push(userId);
+                    console.log('user saved');
+                    if (userIds.length == users.length) {
+                        console.log('users resolved');
+                    }
                     userIds.length == users.length && deferred.resolve(userIds);
-                }
-            });
+                });
         });
 
         return deferred.promise;
     }
 
     function saveChats(userIds) {
-        var deferred = q.defer();
+        var savePromises = [];
 
         var chats = [];
         userIds.forEach(function(uId, index) {
@@ -137,21 +82,14 @@
         });
         chats.forEach(function (chat, index) {
             var chatModel = new Chat(chat);
-            chatModel.save(function(err, cm) {
-                if (err) {
-                    deferred.reject(err);
-                } else {
-                    chats[index] = cm;
-                    index == chats.length - 1 && deferred.resolve(chats);
-                }
-            })
+            savePromises.push(modelSavePromise(chatModel))
         });
 
-        return deferred.promise;
+        return q.all(savePromises);
     }
 
     function saveMessages(chats) {
-        var deferred = q.defer();
+        var savePromises = [];
 
         chats.forEach(function(chat, cIndex) {
             messages.forEach(function (message, mIndex) {
@@ -162,17 +100,11 @@
                     text: message.text,
                     wasRead: message.wasRead
                 });
-                messageModel.save(function(err, mm) {
-                    if (err) {
-                        deferred.reject(err)
-                    } else {
-                        cIndex == chats.length - 1 && mIndex == messages.length - 1 && deferred.resolve(messages);
-                    }
-                })
+                savePromises.push(modelSavePromise(messageModel));
             });
         });
 
-        return deferred.promise;
+        return q.all(savePromises);
     }
 
     function modelRemovePromise(model) {
@@ -190,18 +122,34 @@
         return deferred.promise;
     }
 
+    function modelSavePromise(model) {
+        var deferred = q.defer();
+
+        model.save(function (err) {
+            if(err) {
+                console.log(err);
+                deferred.reject(err);
+            } else {
+                deferred.resolve(model);
+            }
+        });
+
+        return deferred.promise;
+    }
+
 
     function init() {
+        config.dbPopulateInProgress = true;
         models.init();
         clear()
             .then(saveUsers)
             .then(saveChats)
             .then(saveMessages)
             .then(function () {
+                config.dbPopulateInProgress = false;
                 console.log('Db populated');
                 process.exit();
             }, console.log);
-
     }
 
     init();

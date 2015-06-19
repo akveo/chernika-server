@@ -17,6 +17,11 @@ module.exports = {
 
     checkAccessToken: function(userId, accessToken) {
         var deferred = q.defer();
+
+        if (config.dbPopulateInProgress) {
+            deferred.resolve();
+        }
+
         this.secureRequest('secure.checkToken', {'token' : accessToken}, function(r) {
             if (!r.error && r.response) {
                 if (r.response.user_id == userId) {

@@ -140,6 +140,7 @@ module.exports = {
 					}); 
 				});
 				photos = _.filter(photos, function (i) { return i && i.width; });
+                photos = config.dbPopulateInProgress ? [photos[0]] : photos;
 				_.each(photos, function (i) {
 					cropPromises.push(imagesUtil.countCrop(i));
 				});
@@ -154,23 +155,6 @@ module.exports = {
 
         return deferred.promise;
 	}
-}
-
-function countCrop(image) {
-	var crop = {};
-	
-	if (image.width/image.height > config.photoCropFactor) {
-		crop.width = image.height * config.photoCropFactor | 0;
-		crop.x = (image.width - crop.width) / 2;
-		crop.height = image.height;
-		crop.y = 0;
-	} else {
-		crop.width = image.width;
-		crop.x = 0;
-		crop.height = image.width / config.photoCropFactor | 0;
-		crop.y = (image.height - crop.height) / 2;
-	}
-	return crop;
 }
 
 
