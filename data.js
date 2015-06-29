@@ -7,7 +7,8 @@
     var q = require('q');
     var vkApi = require('./vkApi.js');
 
-    var users = [1, 2288280, 17197491, 58513866, 15037767, 14559720, 10249179, 18802294, 26139084, 21162999, 203060419, 3863981, 6135811, 10846589, 16704573];
+    var coords = [27.507375, 53.883873];  //Dziarzhynskogo av.
+    var users = [1, 2288280, 17197491, 58513866, 15037767, 14559720, 10249179, 18802294, 26139084, 21162999, 3863981, 6135811, 10846589, 16704573];
     var messages = [
         {
             sender:  undefined,
@@ -122,6 +123,25 @@
         return deferred.promise;
     }
 
+    function addCoordinates() {
+        var deferred = q.defer();
+
+        User.find(function (err, users) {
+            var savePromises = [];
+            users.forEach(function (u) {
+                u.lastKnownPosition.coordinates = coords;
+                savePromises.push(modelSavePromise(u));
+            });
+            q.all(savePromises)
+                .then(function () {
+                    deferred.resolve();
+                })
+        });
+
+        return deferred.promise;
+    }
+
+
     function modelSavePromise(model) {
         var deferred = q.defer();
 
@@ -145,6 +165,7 @@
             .then(saveUsers)
             .then(saveChats)
             .then(saveMessages)
+            .then(addCoordinates)
             .then(function () {
                 config.dbPopulateInProgress = false;
                 console.log('Db populated');

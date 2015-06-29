@@ -8,7 +8,7 @@ module.exports = {
 
         lon = parseFloat(lon);
         lat = parseFloat(lat);
-        return UserService.update(userId,{ lastKnownPosition: { type:'Point', coordinates: [lon, lat] }})
+        return UserService.update(userId,{ lastKnownPosition: { type:'Point', coordinates:[lon, lat] }})
             .then(self._getFindByGeoParams)
             .then(self._findByGeo);
     },
@@ -38,8 +38,7 @@ module.exports = {
         var deferred = q.defer();
 
         User.geoNear(params.position, {
-            maxDistance: params.maxDistance / 6371, // km to radians
-            distanceMultiplier: 6371, // radians to km
+            maxDistance: params.maxDistance * 1000,
             spherical: true,
             query: {
                 _id: { $nin: params.likedUsers },
