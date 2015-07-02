@@ -17,7 +17,7 @@ module.exports = {
 	},
 
     getProfileInfo: function (req, res) {
-        UserService.getInfo(req.params.userId)
+        UserService.getInfo(req.params.id)
             .then(function (profileInfo) {
                 res.send(profileInfo);
             })
