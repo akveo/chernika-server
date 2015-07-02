@@ -14,7 +14,18 @@ module.exports = {
 				logger.error('findProfile: ' + error);
 				res.send(500, 'Internal error');
 			});
-	}
+	},
+
+    getProfileInfo: function (req, res) {
+        UserService.getInfo(req.params.userId)
+            .then(function (profileInfo) {
+                res.send(profileInfo);
+            })
+            .fail(function (error) {
+                logger.error('getProfileInfo: ' + error);
+                res.send(500, 'Internal error');
+            })
+    }
 };
 
 

@@ -27,6 +27,7 @@ module.exports.init = function() {
 	server.get("/user/photos", UserController.findPhotos);
 	
 	server.get("/profile/:id", ProfileController.findProfile);
+    server.get("/profile/:id/info", ProfileController.getProfileInfo);
 	
 	server.get("/suggestions", SuggestController.findByGeo);
 	server.post("/suggestions/like", SuggestController.like);
