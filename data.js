@@ -97,7 +97,7 @@
                 var messageModel = new Message({
                     sender: mIndex % 2 == 0 ? chat.users[0] : chat.users[1],
                     chat: chat._id,
-                    created: message.created,
+                    created: new Date(),
                     text: message.text,
                     wasRead: message.wasRead
                 });
