@@ -1,6 +1,5 @@
 var io = require('socket.io');
 var AuthPolicy = require('./policies/AuthPolicy.js');
-var restify = require('restify');
 var mongoose = require('mongoose');
 
 module.exports = {
@@ -29,7 +28,6 @@ function initializeUnauthorizedSocket(socket) {
             initializeAuthorizedSocket(socket);
         } else {
             socket.emit('socket_error', {msg: 'Access not permitted', type: 'AuthError'});
-            socket.disconnect()
         }
     }
 }
