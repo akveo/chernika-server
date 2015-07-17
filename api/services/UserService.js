@@ -132,6 +132,7 @@ module.exports = {
                 return {
                     firstName: user.firstName,
                     sex: user.sex,
+                    age: user.age,
                     lastKnownPosition: user.lastKnownPosition,
                     photos: user.photos
                 }
