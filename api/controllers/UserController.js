@@ -54,7 +54,17 @@ module.exports = {
 			.fail(function (error) {
 				res.send(500, 'Internal error');
 			});
-	}
+	},
+
+    updatePhotos: function (req, res) {
+        UserService.updatePhotos(req.params)
+            .then(function() {
+                res.send(204);
+            })
+            .fail(function (error) {
+                res.send(500, 'Internal error');
+            });
+    }
 };
 
 

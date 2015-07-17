@@ -101,6 +101,16 @@ module.exports = {
 				return self.save(user);
 			});
 	},
+
+    updatePhotos: function(params) {
+        var self = this;
+        return this.find(params.userId)
+            .then(function(user) {
+                var photos = params.photos;
+                user.photos = photos;
+                return self.save(user);
+            });
+    },
 	
 	save: function(user) {
 		var deferred = q.defer();
