@@ -14,7 +14,7 @@ var userSchema = new Schema({
 		maxAge: Number,
 		show: Number
 	},
-	photo: {
+	photos: [{
 		src: String,
 		width: Number,
 		height: Number,
@@ -24,7 +24,7 @@ var userSchema = new Schema({
 			width: Number,
 			height: Number
 		}
-	}
+	}]
 });
 
 userSchema.methods.initSettings = function() {

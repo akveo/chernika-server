@@ -1,6 +1,6 @@
 
 var q = require('q');
-var _ = require('underscore')
+var _ = require('underscore');
 var vkApi = require('../../vkApi');
 var imagesUtil = require('../images');
 
@@ -11,15 +11,19 @@ module.exports = {
 		
 		return this.findByFilter({ vkId: vkId })
 			.then(function(user) {
-			
 				user = user || new User();
-				return q.all([vkApi.login(vkId, accessToken), self.getUserPhotos(vkId)])
+
+                function photosPromise() {
+                    return user.isNew ? vkApi.getUserPhotos(vkId).then(cropPhotos) : user.photos;
+                }
+
+				return  q.all([vkApi.login(vkId, accessToken), photosPromise()])
 					.spread(function(vkUser, photos) {
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
 						user.age =  vkBdateToAge(vkUser.bdate);
-						user.photo = photos.length > 0 ? photos[0] : null;
+                        user.photos = photos;
 
 						if (user.isNew) {
 							user.initSettings();
@@ -51,7 +55,7 @@ module.exports = {
             deferred.resolve({
                 id: user.id,
                 firstName: user.firstName,
-                photo: user.photo
+                photo: user.photos[0]
             });
         }, function(err) {
             deferred.reject(err);
@@ -110,52 +114,20 @@ module.exports = {
 		});
 		return deferred.promise;
 	},
-	
-	getUserWithPhotos: function (userId, photoType) {
-		var self = this;
-		return this.find(userId)
-			.then(function(user) {
-				if (!user) return {};
-				return self.getUserPhotos(user.vkId)
-					.then(function(photos) {
-						return {
-							firstName: user.firstName,
-							sex: user.sex,
-							lastKnownPosition: user.lastKnownPosition,
-							photos: photos
-						};
-					})
-			});
-	},
-	
-	getUserPhotos: function (userVkId, photoType) {
-		var deferred = q.defer();
 
-		vkApi.getUserPhotos(userVkId)
-			.then(function(photos) {
-                var cropPromises = [];
-				photos = _.map(photos, function (i) {
-					return _.find(i.sizes, function(j) { 
-						return j.type == (photoType || 'z') 
-					}); 
-				});
-				photos = _.filter(photos, function (i) { return i && i.width; });
-                photos = config.dbPopulateInProgress ? [photos[0]] : photos;
-				_.each(photos, function (i) {
-					cropPromises.push(imagesUtil.countCrop(i));
-				});
-				q.all(cropPromises)
-                    .then(function (result) {
-                        deferred.resolve(result)
-                    }, function(err) {
-                        logger.info('Cannot get user photos', err);
-                        deferred.reject(err);
-                    });
-			});
-
-        return deferred.promise;
-	}
-}
+    getUserWithPhotos: function (userId, photoType) {
+        return this.find(userId)
+            .then(function(user) {
+                if (!user) return {};
+                return {
+                    firstName: user.firstName,
+                    sex: user.sex,
+                    lastKnownPosition: user.lastKnownPosition,
+                    photos: user.photos
+                }
+            });
+    }
+};
 
 
 //Shit, ok for now
@@ -173,4 +145,29 @@ function vkBdateToAge(bdate) {
     }
 
     return new Date(new Date - new Date(splittedBdate[2], splittedBdate[1] - 1, splittedBdate[0])).getFullYear()-1970
+}
+
+function cropPhotos(photos) {
+    var deferred = q.defer();
+    var cropPromises = [];
+
+    photos = _.map(photos, function (i) {
+        return _.find(i.sizes, function(j) {
+            return j.type == 'z'
+        });
+    });
+
+    photos = _.filter(photos, function (i) { return i && i.width; });
+    _.each(photos, function (i) {
+        cropPromises.push(imagesUtil.countCrop(i));
+    });
+
+    return q.all(cropPromises);
+//        .then(function (result) {
+//            console.log(result)
+//            deferred.resolve(result)
+//        }, function(err) {
+//            logger.info('Cannot crop user photos', err);
+//            deferred.reject(err);
+//        });
 }
