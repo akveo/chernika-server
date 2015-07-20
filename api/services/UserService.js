@@ -106,8 +106,7 @@ module.exports = {
         var self = this;
         return this.find(params.userId)
             .then(function(user) {
-                var photos = params.photos;
-                user.photos = photos;
+                user.photos = params.photos ? params.photos : user.photos;
                 return self.save(user);
             });
     },
@@ -159,7 +158,6 @@ function vkBdateToAge(bdate) {
 }
 
 function cropPhotos(photos) {
-    var deferred = q.defer();
     var cropPromises = [];
 
     photos = _.map(photos, function (i) {
