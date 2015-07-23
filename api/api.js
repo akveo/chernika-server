@@ -26,6 +26,7 @@ module.exports.init = function() {
 	server.put("/user/settings", UserController.updateSettings);
 	server.get("/user/photos", UserController.findPhotos);
     server.put("/user/photos", UserController.updatePhotos);
+    server.put("/user/devices", UserController.addDevice);
 	
 	server.get("/profile/:id", ProfileController.findProfile);
     server.get("/profile/:id/info", ProfileController.getProfileInfo);

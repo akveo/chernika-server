@@ -110,6 +110,23 @@ module.exports = {
                 return self.save(user);
             });
     },
+
+    addDevice: function (params) {
+        var self = this;
+        var device = params.device;
+
+        function isDeviceAlreadyAdded(userDevice) {
+            return userDevice.token === device.token;
+        }
+        return this.find(params.userId)
+            .then(function(user){
+                if (!user.devices.some(isDeviceAlreadyAdded)) {
+                    user.devices.push(device);
+                }
+                console.log(user.devices);
+                return self.save(user);
+            });
+    },
 	
 	save: function(user) {
 		var deferred = q.defer();

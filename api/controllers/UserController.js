@@ -64,6 +64,16 @@ module.exports = {
             .fail(function (error) {
                 res.send(500, 'Internal error');
             });
+    },
+
+    addDevice: function (req, res) {
+        UserService.addDevice(req.params)
+            .then(function() {
+                res.send(204);
+            })
+            .fail(function (error) {
+                res.send(500, 'Internal error');
+            });
     }
 };
 

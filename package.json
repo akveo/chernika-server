@@ -10,6 +10,7 @@
   "dependencies": {
     "crypto": "0.0.3",
     "event-emitter": ">=0.3.3",
+    "ionic-push-server": "^1.0.0",
     "mongoose": ">=4.0.1",
     "opencv": "^3.0.0",
     "path": "0.11.14",

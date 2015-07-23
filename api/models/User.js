@@ -24,7 +24,8 @@ var userSchema = new Schema({
 			width: Number,
 			height: Number
 		}
-	}]
+	}],
+    devices: [{token: {type: String}, platform: {type: String}}]
 });
 
 userSchema.methods.initSettings = function() {
