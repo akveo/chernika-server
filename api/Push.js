@@ -28,11 +28,9 @@ var androidSettings = {
 };
 
 
-ionicPushServer(credentials, notification);
-
-function sendNotification(deviceToken, message) {
+function sendNotification(deviceTokens, message) {
     var notification = {
-        "tokens": deviceToken,
+        "tokens": deviceTokens,
         "notification": {
             "alert": message,
             "ios": iosSettings,
@@ -43,6 +41,6 @@ function sendNotification(deviceToken, message) {
 }
 
 module.exports = {
-    sendNotification: sendNotification()
+    sendNotification: sendNotification
 }
 

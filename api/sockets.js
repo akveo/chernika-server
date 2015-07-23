@@ -1,6 +1,7 @@
 var io = require('socket.io');
 var AuthPolicy = require('./policies/AuthPolicy.js');
 var mongoose = require('mongoose');
+var Push = require('./Push');
 
 module.exports = {
     init: function(server) {
@@ -44,6 +45,14 @@ function initializeAuthorizedSocket(socket) {
         var messageDocument = new Message(message);
         ChatService.addMessage(messageDocument).then(function () {
             message._id = messageDocument._id;
+            UserService.find(message.sender)
+                .then(function (u) {
+                    var tokens = [];
+                    u.devices.forEach(function (d) {
+                        tokens.push(d.token);
+                    })
+                    Push.sendNotification(tokens, 'blaaaaaaaaaaaa');
+                });
             io.to('chat_' + message.chat).emit('new_message', message);
         });
     }
