@@ -1,4 +1,5 @@
 var ionicPushServer = require('ionic-push-server'); //TODO: Stop using this package (easy to implement)
+var _ = require('underscore');
 
 var credentials = {
     IonicApplicationID : config.ionic.appId,
@@ -21,10 +22,7 @@ var androidSettings = {
     "collapseKey": "foo",
     "delayWhileIdle": true,
     "timeToLive": 300,
-    "payload": {
-        "key1": "value",
-        "key2": "value"
-    }
+    "title": 'Pinder'
 };
 
 function getUserDevices(id) {
@@ -36,15 +34,16 @@ function getUserDevices(id) {
         })
 }
 
-function sendNotification(id, message) {
+function sendNotification(id, message, title) {
     return getUserDevices(id)
         .then(function (deviceTokens) {
+            var android = title ? _.extend({}, androidSettings, {title: title}) : androidSettings;
             var notification = {
                 "tokens": deviceTokens,
                 "notification": {
                     "alert": message,
                     "ios": iosSettings,
-                    "android": androidSettings
+                    "android": android
                 }
             };
             ionicPushServer(credentials, notification);
