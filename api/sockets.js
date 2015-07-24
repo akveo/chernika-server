@@ -45,7 +45,10 @@ function initializeAuthorizedSocket(socket) {
         var messageDocument = new Message(data.message);
         ChatService.addMessage(messageDocument).then(function () {
             io.to('chat_' + messageDocument.chat).emit('new_message', messageDocument);
-            Push.sendNotification(data.receiver, messageDocument.text);
+            Push.sendNotification(data.receiver, {
+                message: messageDocument.text,
+                title: 'Новое сообщение'
+            });
         });
     }
 
