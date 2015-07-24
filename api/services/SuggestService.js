@@ -1,5 +1,6 @@
 
 var q = require('q');
+var Push = require('../Push');
 
 module.exports = {
 
@@ -76,7 +77,11 @@ module.exports = {
 		return this.isOppositeMatched(userId, targetId)
 			.then(function (isMatched) {
 				if (isMatched) {
-					ChatService.create(userId, targetId);
+					ChatService.create(userId, targetId)
+                        .then(function () {
+                            Push.sendNotification(userId, 'Новая пара!');
+                            Push.sendNotification(targetId, 'Новая пара!');
+                        });
 				}
 				return !!isMatched;
 			});
