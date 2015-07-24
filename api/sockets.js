@@ -41,19 +41,11 @@ function initializeAuthorizedSocket(socket) {
     socket.on('messages_during_interval', onMessagesDurinInterval);
     socket.on('message_read', onMessageRead);
 
-    function onNewMessage(message) {
-        var messageDocument = new Message(message);
+    function onNewMessage(data) {
+        var messageDocument = new Message(data.message);
         ChatService.addMessage(messageDocument).then(function () {
-            message._id = messageDocument._id;
-            UserService.find(message.sender)
-                .then(function (u) {
-                    var tokens = [];
-                    u.devices.forEach(function (d) {
-                        tokens.push(d.token);
-                    })
-                    Push.sendNotification(tokens, 'blaaaaaaaaaaaa');
-                });
-            io.to('chat_' + message.chat).emit('new_message', message);
+            io.to('chat_' + messageDocument.chat).emit('new_message', messageDocument);
+            Push.sendNotification(data.receiver, messageDocument.text);
         });
     }
 
