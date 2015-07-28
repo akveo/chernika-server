@@ -29,8 +29,7 @@ module.exports.init = function() {
     server.put("/user/devices", UserController.addDevice);
 	
 	server.get("/profile/:id", ProfileController.findProfile);
-    server.get("/profile/:id/info", ProfileController.getProfileInfo);
-	
+
 	server.get("/suggestions", SuggestController.findByGeo);
 	server.post("/suggestions/like", SuggestController.like);
 	server.post("/suggestions/dislike", SuggestController.dislike);

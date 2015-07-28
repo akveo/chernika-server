@@ -90,7 +90,7 @@ module.exports = {
             chat: chat._id
         };
 
-        UserService.getInfo(userForInfoId)
+        UserService.getUserWithPhotos(userForInfoId)
             .then(function(user) {
                 info.user = user;
                 return ChatService.getLastChatMessage(chat._id)

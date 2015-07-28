@@ -48,22 +48,6 @@ module.exports = {
 		return deferred.promise;
 	},
 
-    getInfo: function(id) {
-        var deferred = q.defer();
-
-        UserService.find(id).then(function (user) {
-            deferred.resolve({
-                id: user.id,
-                firstName: user.firstName,
-                photo: user.photos[0]
-            });
-        }, function(err) {
-            deferred.reject(err);
-        });
-
-        return deferred.promise;
-    },
-	
 	getSettings: function(id) {
 		return this.find(id)
 			.then(function(user) {
