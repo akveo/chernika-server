@@ -147,6 +147,7 @@ module.exports = {
                 if (!user) return {};
                 return {
                     firstName: user.firstName,
+                    vkId: user.vkId,
                     sex: user.sex,
                     age: user.age,
                     lastKnownPosition: user.lastKnownPosition,
