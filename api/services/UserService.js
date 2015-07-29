@@ -22,7 +22,7 @@ module.exports = {
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
-						user.age =  clientVkUser ? clientVkUser.bdate : vkBdateToAge(vkUser.bdate); //Not very wonderful
+						user.age =  clientVkUser ? vkBdateToAge(clientVkUser.bdate) : vkBdateToAge(vkUser.bdate); //Not very wonderful
                         user.photos = photos;
 
 						if (user.isNew) {
