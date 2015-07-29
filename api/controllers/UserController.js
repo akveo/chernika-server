@@ -5,7 +5,7 @@ module.exports = {
 		if (!req.params.user_id || !req.params.access_token) {
 			return res.send(400, 'Incorrect parameters');
 		}
-		UserService.login(req.params.user_id, req.params.access_token)
+		UserService.login(req.params.user_id, req.params.access_token, req.params.vkUser)
 			.then(function(userId) {
 				req.params.userId = userId;
 				return next();

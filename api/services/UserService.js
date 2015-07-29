@@ -6,7 +6,7 @@ var imagesUtil = require('../images');
 
 module.exports = {
 
-	login: function (vkId, accessToken) {
+	login: function (vkId, accessToken, clientVkUser) {
 		var self = this;
 		
 		return this.findByFilter({ vkId: vkId })
@@ -22,7 +22,7 @@ module.exports = {
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
-						user.age =  vkBdateToAge(vkUser.bdate);
+						user.age =  clientVkUser ? clientVkUser.bdate : vkBdateToAge(vkUser.bdate); //Not very wonderful
                         user.photos = photos;
 
 						if (user.isNew) {
