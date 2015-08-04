@@ -130,6 +130,7 @@ module.exports = {
             .then(function(user) {
                 if (!user) return {};
                 return {
+                    _id: user._id,
                     firstName: user.firstName,
                     vkId: user.vkId,
                     sex: user.sex,
