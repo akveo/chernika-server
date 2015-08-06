@@ -41,6 +41,7 @@ module.exports = {
         User.geoNear(params.position, {
             maxDistance: params.maxDistance * 1000,
             spherical: true,
+            limit: config.geoNearLimit,
             query: {
                 _id: { $nin: params.likedUsers },
                 sex: { $in: params.sex },
