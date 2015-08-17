@@ -164,14 +164,11 @@ function cropPhotos(photos) {
     var cropPromises = [];
 
     photos = _.map(photos, function (i) {
-        return _.find(i.sizes, function(j) {
-            return j.type == 'z'
-        });
+        return getMaxSizes(i.sizes);
     });
 
-    photos = _.filter(photos, function (i) { return i && i.width; });
     _.each(photos, function (i) {
-        cropPromises.push(imagesUtil.countCrop(i));
+        i && cropPromises.push(imagesUtil.countCrop(i));
     });
 
     return q.all(cropPromises);
@@ -182,4 +179,11 @@ function cropPhotos(photos) {
 //            logger.info('Cannot crop user photos', err);
 //            deferred.reject(err);
 //        });
+}
+
+function getMaxSizes(sizes) {
+    sizes = _.groupBy(sizes, function(s) {
+        return s.type;
+    });
+    return sizes.z ? sizes.z[0] : (sizes.y ? sizes.y[0] : sizes.x && sizes.x[0]);
 }

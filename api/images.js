@@ -22,7 +22,11 @@ module.exports = {
         }
 
         return this.loadMatrix(image.src)
-            .then(this.findFace)
+            .then(function(matrix) {
+              image.width = matrix.width();
+              image.height = matrix.height();
+              return this.findFace(matrix);
+            })
             .then(function (face) {
                 if (face) {
                     var faceCenter = { x: face.x + face.width/2, y: face.y + face.height/2 };
