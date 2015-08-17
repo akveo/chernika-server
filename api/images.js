@@ -8,6 +8,7 @@ var detectQueue = [];
 module.exports = {
     countCrop: function (image) {
         var crop = {};
+        var self = this;
 
         if (image.width / image.height > config.photoCropFactor) {
             crop.width = image.height * config.photoCropFactor | 0;
@@ -25,7 +26,7 @@ module.exports = {
             .then(function(matrix) {
               image.width = matrix.width();
               image.height = matrix.height();
-              return this.findFace(matrix);
+              return self.findFace(matrix);
             })
             .then(function (face) {
                 if (face) {
