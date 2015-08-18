@@ -105,14 +105,12 @@ module.exports = {
         return deferred.promise;
     },
 
-    getMessages: function(chatId, page) {
+    getMessages: function(chatId, skip) {
         var deferred = q.defer();
-        page = page || 1;
+        skip = skip || 0;
 
-        Message.paginate({chat: chatId}, {
-            page: page,
-            limit: config.chatPageSize
-        }, function(err, messages) {
+        Message.find({chat: chatId}).skip(skip).limit(config.chatPageSize)
+          .exec(function(err, messages) {
             if (!err) {
                 deferred.resolve(messages);
             } else {

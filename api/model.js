@@ -1,7 +1,6 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var mongoosePaginate = require('mongoose-paginate');
 
 module.exports = {
 
@@ -25,7 +24,6 @@ module.exports = {
 
 		//Messae
     var messageSchema = require('./models/Message');
-		messageSchema.plugin(mongoosePaginate);
     GLOBAL['Message'] = mongoose.model('Message', messageSchema);
 
     var chatSchema = require('./models/Chat');
