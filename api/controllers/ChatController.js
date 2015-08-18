@@ -35,7 +35,7 @@ module.exports = {
 		if (!req.params.chatId) {
 			return res.send(400, 'Incorrect parameters');
 		}
-        ChatService.getMessages(req.params.chatId).then(function(messages) {
+        ChatService.getMessages(req.params.chatId, req.params.skip).then(function(messages) {
             res.send(messages);
         }, function (error) {
             logger.error('findMessages: ' + error);
