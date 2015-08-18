@@ -105,8 +105,23 @@ module.exports = {
         return deferred.promise;
     },
 
-    getMessages: function(chatId) {
-        return ChatService.getMessagesDuringInterval(chatId, new Date(null), new Date());
+    getMessages: function(chatId, page) {
+        var deferred = q.defer();
+        page = page || 1;
+
+        Message.paginate({chat: chatId}, {
+            page: page,
+            limit: config.chatPageSize
+        }, function(err, messages) {
+            if (!err) {
+                deferred.resolve(messages);
+            } else {
+                logger.info('Cannot find messages during interval: ', err);
+                deferred.reject(err);
+            }
+        });
+
+        return deferred.promise;
     },
 
     getMessagesDuringInterval: function (chatId, from, until) {

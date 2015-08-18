@@ -38,7 +38,6 @@ function initializeAuthorizedSocket(socket) {
     joinChatRooms(socket);
 
     socket.on('new_message', onNewMessage);
-    socket.on('messages_during_interval', onMessagesDurinInterval);
     socket.on('message_read', onMessageRead);
     socket.on('join_chat', joinChatRoom);
 
@@ -48,16 +47,6 @@ function initializeAuthorizedSocket(socket) {
             io.to('chat_' + messageDocument.chat).emit('new_message', messageDocument);
             Push.sendNotification(data.receiver._id, messageDocument.text, data.receiver.name);
         });
-    }
-
-    function onMessagesDurinInterval(req) {
-        var until = req.until ? new Date(req.until) : new Date();
-        var from = new Date(req.from);
-        var chatId = mongoose.Types.ObjectId(req.chat);
-        ChatService.getMessagesDuringInterval(chatId, from, until)
-            .then(function(messages) {
-                socket.emit('messages_during_interval', messages);
-            });
     }
 
     function onMessageRead(message) {
