@@ -10,22 +10,21 @@ module.exports = {
         var crop = {};
         var self = this;
 
-        if (image.width / image.height > config.photoCropFactor) {
-            crop.width = image.height * config.photoCropFactor | 0;
-            crop.x = (image.width - crop.width) / 2;
-            crop.height = image.height;
-            crop.y = 0;
-        } else {
-            crop.width = image.width;
-            crop.x = 0;
-            crop.height = image.width / config.photoCropFactor | 0;
-            crop.y = (image.height - crop.height) / 2;
-        }
-
         return this.loadMatrix(image.src)
             .then(function(matrix) {
               image.width = matrix.width();
               image.height = matrix.height();
+              if (image.width / image.height > config.photoCropFactor) {
+                  crop.width = image.height * config.photoCropFactor | 0;
+                  crop.x = (image.width - crop.width) / 2;
+                  crop.height = image.height;
+                  crop.y = 0;
+              } else {
+                  crop.width = image.width;
+                  crop.x = 0;
+                  crop.height = image.width / config.photoCropFactor | 0;
+                  crop.y = (image.height - crop.height) / 2;
+              }
               return self.findFace(matrix);
             })
             .then(function (face) {
