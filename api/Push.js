@@ -22,7 +22,6 @@ var androidSettings = {
     "collapseKey": "foo",
     "delayWhileIdle": true,
     "timeToLive": 300,
-    "title": 'Pinder'
 };
 
 function getUserDevices(id) {
@@ -37,12 +36,12 @@ function getUserDevices(id) {
 function sendNotification(id, message, title) {
     return getUserDevices(id)
         .then(function (deviceTokens) {
-            var android = title ? _.extend({}, androidSettings, {title: title}) : androidSettings;
+            var android = _.extend({}, androidSettings, {  alert: message, title:  title ? title : 'Pinder'});
+            var ios = _.extend({}, iosSettings, { alert: title ? title + ': ' + message : message});
             var notification = {
                 "tokens": deviceTokens,
                 "notification": {
-                    "alert": message,
-                    "ios": iosSettings,
+                    "ios": ios,
                     "android": android
                 }
             };
