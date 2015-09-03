@@ -1,5 +1,35 @@
-var ionicPushServer = require('ionic-push-server'); //TODO: Stop using this package (easy to implement)
 var _ = require('underscore');
+var http = require('http');
+var querystring = require('querystring');
+
+var ionicPushServer = function (credentials, notification){
+
+    var postData = querystring.stringify(notification);
+
+    var options = {
+        hostname: 'push.ionic.io',
+        port: 80,
+        path: '/api/v1/push',
+        method: 'POST',
+        headers: {
+            "Authorization": "Basic " + new Buffer(credentials.IonicApplicationAPIsecret + ":").toString("base64"),
+            "Content-Type" : "application/json",
+            "X-Ionic-Application-Id" : credentials.IonicApplicationID
+        }
+    };
+
+    var req = http.request(options, function(res) {
+        res.setEncoding('utf8');
+    });
+
+    req.on('error', function(e) {
+        logger.error('Push error: %s', e.toString());
+    });
+
+    req.write(JSON.stringify(notification));
+    req.end();
+
+};
 
 var credentials = {
     IonicApplicationID : config.ionic.appId,
@@ -21,7 +51,7 @@ var iosSettings = {
 var androidSettings = {
     "collapseKey": "foo",
     "delayWhileIdle": true,
-    "timeToLive": 300,
+    "timeToLive": 300
 };
 
 function getUserDevices(id) {
