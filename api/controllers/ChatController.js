@@ -30,7 +30,7 @@ module.exports = {
 	},
 
 	getMatchedChat: function (req, res) {
-		ChatService.getMatchedChat(req.params.matchedProfileId)
+		ChatService.getMatchedChat(req.params.userId, req.params.matchedProfileId)
 			.then(function (chat) {
 				res.send(chat)
 			}, function (error) {
