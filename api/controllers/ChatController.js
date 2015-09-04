@@ -28,6 +28,16 @@ module.exports = {
 				res.send(500, 'Internal error');
 			})
 	},
+
+	getMatchedChat: function (req, res) {
+		ChatService.getMatchedChat(req.params.matchedProfileId)
+			.then(function (chat) {
+				res.send(chat)
+			}, function (error) {
+				logger.error('getMatchedChat: ' + error);
+				res.send(500, 'Internal error');
+			})
+	},
 	
 	find: function(req, res) {
 		if (!req.params.chatId) {

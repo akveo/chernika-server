@@ -19,14 +19,14 @@ module.exports.init = function() {
 
 	server.post("/user", UserController.login, AuthPolicy.login);
 
-    server.use(AuthPolicy.checkSession);
+  server.use(AuthPolicy.checkSession);
 	
-    server.get("/user", UserController.find);
+	server.get("/user", UserController.find);
 	server.get("/user/settings", UserController.getSettings);
 	server.put("/user/settings", UserController.updateSettings);
 	server.get("/user/photos", UserController.findPhotos);
-    server.put("/user/photos", UserController.updatePhotos);
-    server.put("/user/devices", UserController.addDevice);
+  server.put("/user/photos", UserController.updatePhotos);
+  server.put("/user/devices", UserController.addDevice);
 	
 	server.get("/profile/:id", ProfileController.findProfile);
 
@@ -36,6 +36,7 @@ module.exports.init = function() {
 	
 	server.get("/chats", ChatController.findAll);
 	server.get("/chats/info", ChatController.getChatsInfo);
+	server.get("/chats/matched/:matchedProfileId", ChatController.getMatchedChat);
 	server.get("/chats/:chatId", ChatController.find);
 	server.get("/chats/:chatId/messages", ChatController.findMessages);
 	server.post("/chats/:chatId/messages", ChatController.createMessage);

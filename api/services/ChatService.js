@@ -1,6 +1,7 @@
 
 var q = require('q');
 var mongoose = require('mongoose');
+var _ = require('underscore');
 
 module.exports = {
 
@@ -63,6 +64,15 @@ module.exports = {
         });
 
         return deferred.promise;
+    },
+
+    getMatchedChat: function (matchedProfileId) {
+        return ChatService.findChats()
+          .then(function (chats) {
+              return _.find(chats, function (c) {
+                  return _.contains(c.users, matchedProfileId);
+              })
+          })
     },
 
     getChatsInfo: function(userId) {
