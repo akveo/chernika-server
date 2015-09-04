@@ -35,6 +35,7 @@ module.exports.init = function() {
 	server.post("/suggestions/dislike", SuggestController.dislike);
 	
 	server.get("/chats", ChatController.findAll);
+	server.get("/chats/info", ChatController.getChatsInfo);
 	server.get("/chats/:chatId", ChatController.find);
 	server.get("/chats/:chatId/messages", ChatController.findMessages);
 	server.post("/chats/:chatId/messages", ChatController.createMessage);

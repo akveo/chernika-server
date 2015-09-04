@@ -10,13 +10,23 @@ var chats = [{
 module.exports = {
     
 	findAll: function(req, res) {
-        ChatService.getChatsInfo(req.params.userId)
-            .then(function (chatsInfo) {
-                res.send(chatsInfo);
-            }, function (error) {
-                logger.error('findAll: ' + error);
-                res.send(500, 'Internal error');
-            })
+       ChatService.findChats(req.params.userId)
+				 .then(function (chats) {
+					 res.send(chats);
+				 }, function (error) {
+					 logger.error('findAll: ' + error);
+					 res.send(500, 'Internal error');
+				 })
+	},
+
+	getChatsInfo: function (req, res) {
+		ChatService.getChatsInfo(req.params.userId)
+			.then(function (chatsInfo) {
+				res.send(chatsInfo);
+			}, function (error) {
+				logger.error('getChatsInfo: ' + error);
+				res.send(500, 'Internal error');
+			})
 	},
 	
 	find: function(req, res) {
