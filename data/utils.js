@@ -47,21 +47,6 @@
     ]);
   }
 
-  function modelRemovePromise(model) {
-    var deferred = q.defer();
-
-    model.remove(function (err) {
-      if(err) {
-        console.log(err);
-        deferred.reject(err);
-      } else {
-        deferred.resolve();
-      }
-    });
-
-    return deferred.promise;
-  }
-
   function saveUsers(vkIds) {
     var userIds = [];
     var deferred = q.defer();
@@ -177,4 +162,4 @@
     cleardb: cleardb
   }
 
-})
+})();
