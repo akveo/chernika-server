@@ -8,7 +8,7 @@ module.exports = {
 
 	login: function (vkId, accessToken, clientVkUser) {
 		var self = this;
-		
+
 		return this.findByFilter({ vkId: vkId })
 			.then(function(user) {
 				user = user || new User();

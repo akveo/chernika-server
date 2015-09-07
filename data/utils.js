@@ -1,8 +1,13 @@
 (function() {
   GLOBAL["config"] =  require('./../config.local.js');
+  var logger = require('../logger').create();
+  GLOBAL['logger'] = logger;
+  var models = require('./../api/model');
   var utils = require('./../utils');
   var UserService = require('./../api/services/UserService');
   var q = require('q');
+
+  models.init()
 
   var messages = [
     {
