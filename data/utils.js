@@ -65,6 +65,7 @@
         });
     });
 
+    setTimeout(function () {deferred.resolve(userIds)}, 60000);
     return deferred.promise;
   }
 
