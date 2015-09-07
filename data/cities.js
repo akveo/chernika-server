@@ -29,7 +29,7 @@
                 console.log(users.items.length, 'users retrieved');
                 vkIds = _.map(users.items, function (user) { return user.id; })
             })
-            .then(function () { return addUsersPack(vkIds.splice(0, packSize)) });
+            .then(function () { return addUsersPack(vkIds.splice(0, packSize)) }, console.log);
     }
 
     init();

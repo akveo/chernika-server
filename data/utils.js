@@ -61,11 +61,11 @@
           if (userIds.length == vkIds.length) {
             console.log('users resolved');
           }
-          userIds.length == vkIds.length && deferred.resolve(userIds);
+          userIds.length == vkIds.length && deferred.promise.state == 'pending' && deferred.resolve(userIds);
         });
     });
 
-    setTimeout(function () {deferred.resolve(userIds)}, 60000);
+    setTimeout(function () {deferred.promise.state == 'pending' && deferred.resolve(userIds)}, 60000);
     return deferred.promise;
   }
 
