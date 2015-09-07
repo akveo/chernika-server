@@ -16,7 +16,7 @@
         models.init();
         dbutils.cleardb()
             .then(function() { return dbutils.saveUsers(vkIds) })
-            .then(dbutils.saveChats())
+            .then(dbutils.saveChats)
             .then(dbutils.saveMessages)
             .then(function() { return dbutils.addCoordinates(coords) })
             .then(function () {

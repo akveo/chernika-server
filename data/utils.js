@@ -56,7 +56,7 @@
         .then(function (userId) {
           userIds.push(userId);
           console.log('user saved');
-          if (userIds.length == users.length) {
+          if (userIds.length == vkIds.length) {
             console.log('users resolved');
           }
           userIds.length == vkIds.length && deferred.resolve(userIds);
