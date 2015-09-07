@@ -5,7 +5,7 @@
 
     var coords = [27.507375, 53.883873];  //Dziarzhynskogo av.
     var cityId = 1135212; //Minsk
-    var token = 'b35adbda25e9982d2d4c5cdde60cc880474f8aac3211406d8463609a62941a75fc0fd57afef3f26642747';
+    var token = '7a15e822a7f56029659ec083c6063e92a7ec794e9ebdbb501219f96448c347445893adf6fb3152fe5aab8';
     var packSize = 10;
     var vkIds;
 
