@@ -1,9 +1,8 @@
 var cv = require('opencv');
 var request = require('request');
 var q = require('q');
-
-var openCvInProgress = false;
-var detectQueue = [];
+var ReadWriteLock = require('rwlock');
+var lock = new ReadWriteLock();
 
 module.exports = {
     countCrop: function (image) {
@@ -63,7 +62,7 @@ module.exports = {
     findFace: function (img) {
         var deferred = q.defer();
 
-        function runDetectAlgorithm() {
+        lock.writeLock(function (release) {
             img.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
                 if (err) {
                     logger.info('Could not find faces on image', err);
@@ -71,21 +70,9 @@ module.exports = {
                 } else {
                     deferred.resolve(faces[0]);
                 }
-
-                if (detectQueue.length) {
-                    detectQueue.shift()();
-                } else {
-                    openCvInProgress = false;
-                }
+                release();
             });
-        }
-
-        if (openCvInProgress) {
-            detectQueue.push(runDetectAlgorithm);
-        } else {
-            openCvInProgress = true;
-            runDetectAlgorithm();
-        }
+        });
 
         return deferred.promise;
     },
