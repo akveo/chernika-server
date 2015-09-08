@@ -17,7 +17,7 @@
             .then(function () {
                 config.dbPopulateInProgress = false;
                 console.log('Pack saved, remaining', vkIds.length);
-                vkIds.length ? process.exit() : addUsersPack(vkIds.splice(0, packSize));
+                vkIds.length ? addUsersPack(vkIds.splice(0, packSize)) : process.exit();
             }, console.log)
     }
 

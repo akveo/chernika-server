@@ -61,11 +61,11 @@
           if (userIds.length == vkIds.length) {
             console.log('users resolved');
           }
-          userIds.length == vkIds.length && deferred.promise.state == 'pending' && deferred.resolve(userIds);
+          userIds.length == vkIds.length && deferred.resolve(userIds);
         });
     });
 
-    setTimeout(function () {deferred.promise.state == 'pending' && deferred.resolve(userIds)}, 60000);
+    setTimeout(function () {deferred.resolve(userIds)}, 60000);
     return deferred.promise;
   }
 
@@ -86,6 +86,8 @@
       savePromises.push(modelSavePromise(chatModel))
     });
 
+    console.log('chats saved')
+
     return q.all(savePromises);
   }
 
@@ -105,6 +107,8 @@
       });
     });
 
+    console.log('messages saved')
+
     return q.all(savePromises);
   }
 
@@ -122,6 +126,8 @@
           deferred.resolve();
         })
     });
+
+    console.log('messages added')
 
     return deferred.promise;
   }
