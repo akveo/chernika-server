@@ -86,7 +86,7 @@
       savePromises.push(modelSavePromise(chatModel))
     });
 
-    console.log('chats saved')
+    console.log('chats saved');
 
     return q.all(savePromises);
   }
@@ -107,7 +107,7 @@
       });
     });
 
-    console.log('messages saved')
+    console.log('messages saved');
 
     return q.all(savePromises);
   }
@@ -127,7 +127,7 @@
         })
     });
 
-    console.log('messages added')
+    console.log('coordinates added');
 
     return deferred.promise;
   }
