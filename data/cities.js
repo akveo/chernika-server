@@ -24,7 +24,7 @@
     function init() {
         vkApi.init()
             .then(dbutils.cleardb)
-            .then(function () { return vkApi.request('users.search', {city: cityId, age_from: 18, count: 1000, access_token: token}); })
+            .then(function () { return vkApi.request('users.search', {city: cityId, age_from: 18, status: 6, count: 1000, access_token: token}); })
             .then(function (users) {
                 console.log(users.items.length, 'users retrieved');
                 vkIds = _.map(users.items, function (user) { return user.id; })

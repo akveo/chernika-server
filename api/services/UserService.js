@@ -152,9 +152,9 @@ function vkBdateToAge(bdate) {
     });
 
     if (splittedBdate.length == 1) {
-        splittedBdate = [13, 11, 1970];
+        splittedBdate = [13, 11, 1993];
     } else if (splittedBdate.length == 2) {
-        splittedBdate[2] = 1970;
+        splittedBdate[2] = 1992;
     }
 
     return new Date(new Date - new Date(splittedBdate[2], splittedBdate[1] - 1, splittedBdate[0])).getFullYear()-1970
