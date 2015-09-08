@@ -7,7 +7,7 @@
   var UserService = require('./../api/services/UserService');
   var q = require('q');
 
-  models.init()
+  models.init();
 
   var messages = [
     {
@@ -112,13 +112,13 @@
     return q.all(savePromises);
   }
 
-  function addCoordinates(coords) {
+  function addCoordinates(coordsArr) {
     var deferred = q.defer();
 
     User.find(function (err, users) {
       var savePromises = [];
       users.forEach(function (u) {
-        u.lastKnownPosition.coordinates = coords;
+        u.lastKnownPosition.coordinates = getRandomCoordinatesPair(coordsArr);
         savePromises.push(modelSavePromise(u));
       });
       q.all(savePromises)
@@ -161,6 +161,10 @@
     });
 
     return deferred.promise;
+  }
+
+  function getRandomCoordinatesPair(coordsArray) {
+    return coordsArray[Math.floor(Math.random() * coordsArray.length)];
   }
 
   module.exports = {

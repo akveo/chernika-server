@@ -2,7 +2,7 @@
     var models = require('./../api/model');
     var dbutils = require('./utils');
 
-    var coords = [27.507375, 53.883873];  //Dziarzhynskogo av.
+    var coords = [[27.507375, 53.883873]];  //Dziarzhynskogo av.
     var vkIds = [1, 2288280, 17197491, 58513866, 15037767, 14559720, 10249179, 18802294, 26139084, 21162999, 3863981, 6135811, 10846589, 16704573];
 
     function init() {
