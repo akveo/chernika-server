@@ -22,6 +22,7 @@ module.exports = {
 						user.vkId = vkUser.id;
 						user.firstName = vkUser.first_name;
 						user.sex = vkUser.sex;
+            user.lastActivity = new Date();
 						user.age =  clientVkUser ? vkBdateToAge(clientVkUser.bdate) : vkBdateToAge(vkUser.bdate); //Not very wonderful
                         user.photos = photos;
 
@@ -107,7 +108,6 @@ module.exports = {
                 if (!user.devices.some(isDeviceAlreadyAdded)) {
                     user.devices.push(device);
                 }
-                console.log(user.devices);
                 return self.save(user);
             });
     },

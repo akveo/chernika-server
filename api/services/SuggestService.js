@@ -9,9 +9,12 @@ module.exports = {
 
         lon = parseFloat(lon);
         lat = parseFloat(lat);
-        return UserService.update(userId,{ lastKnownPosition: { type:'Point', coordinates:[lon, lat] }})
-            .then(self._getFindByGeoParams)
-            .then(self._findByGeo);
+        return UserService.update(userId,{
+            lastKnownPosition: { type:'Point', coordinates:[lon, lat] },
+            lastActivity: new Date()
+        })
+          .then(self._getFindByGeoParams)
+          .then(self._findByGeo);
     },
 
     _getFindByGeoParams: function(user) {
