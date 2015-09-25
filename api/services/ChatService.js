@@ -67,7 +67,7 @@ module.exports = {
     },
 
     getMatchedChat: function (userId1, userId2) {
-        return ChatService.findByFilter({users: {$all: [userId1, userId2]}})
+        return ChatService.findByFilter({users: {$all: [mongoose.Types.ObjectId(userId1), mongoose.Types.ObjectId(userId2)]}})
     },
 
     getChatsInfo: function(userId) {
