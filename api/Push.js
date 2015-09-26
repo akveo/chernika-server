@@ -66,7 +66,7 @@ function getUserDevices(id) {
 function sendNotification(id, message, title) {
     return getUserDevices(id)
         .then(function (deviceTokens) {
-            var android = _.extend({}, androidSettings, {  alert: message, title:  title ? title : 'Pinder'});
+            var android = _.extend({}, androidSettings, {  alert: message, title:  title ? title : 'chernika'});
             var ios = _.extend({}, iosSettings, { alert: title ? title + ': ' + message : message});
             var notification = {
                 "tokens": deviceTokens,
