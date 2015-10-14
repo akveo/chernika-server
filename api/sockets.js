@@ -21,7 +21,7 @@ module.exports = {
 function initializeUnauthorizedSocket(socket) {
 
     socket.emit('authorize');
-    socket.on('authorize', onAuthorize);
+    attachSafely(socket, 'authorize', onAuthorize);
 
     function onAuthorize(encryptedToken) {
         socket.userId = AuthPolicy._getTokenId(encryptedToken);
@@ -37,9 +37,9 @@ function initializeAuthorizedSocket(socket) {
 
     joinChatRooms(socket);
 
-    socket.on('new_message', onNewMessage);
-    socket.on('message_read', onMessageRead);
-    socket.on('join_chat', joinChatRoom);
+    attachSafely(socket, 'new_message', onNewMessage);
+    attachSafely(socket, 'message_read', onMessageRead);
+    attachSafely(socket, 'join_chat', joinChatRoom);
 
     function onNewMessage(data) {
         var messageDocument = new Message(data.message);
@@ -67,4 +67,8 @@ function joinChatRooms(socket) {
                 socket.join('chat_' + chat.id);
             });
         });
+}
+
+function attachSafely(socket, name, func) {
+    socket._events[name] || socket.on(name, func);
 }
