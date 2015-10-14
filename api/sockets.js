@@ -70,5 +70,7 @@ function joinChatRooms(socket) {
 }
 
 function attachSafely(socket, name, func) {
-    socket._events[name] || socket.on(name, func);
+    if (!socket._events || !socket._events[name]) {
+        socket.on(name, func);
+    }
 }
