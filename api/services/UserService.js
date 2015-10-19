@@ -70,7 +70,13 @@ module.exports = {
 
         return deferred.promise;
     },
-	
+
+  updateActivity: function (PARAMS) {
+    return this.update(params.userId,{
+      lastActivity: new Date()
+    })
+  },
+
 	updateSettings: function(params) {
 		var self = this;
 		return this.find(params.userId)

@@ -24,6 +24,7 @@ module.exports.init = function() {
 	server.get("/user", UserController.find);
 	server.get("/user/settings", UserController.getSettings);
 	server.put("/user/settings", UserController.updateSettings);
+	server.put("/user/activity", UserController.updateActivity);
 	server.get("/user/photos", UserController.findPhotos);
   server.put("/user/photos", UserController.updatePhotos);
   server.put("/user/devices", UserController.addDevice);

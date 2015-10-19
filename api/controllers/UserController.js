@@ -45,6 +45,16 @@ module.exports = {
 				res.send(500, 'Internal error');
 			});
     },
+
+	updateActivity: function() {
+		UserService.updateActivity(req.params)
+			.then(function() {
+				res.send(204);
+			})
+			.fail(function (error) {
+				res.send(500, 'Internal error');
+			});
+	},
 	
 	findPhotos: function (req, res) {
 		UserService.getUserWithPhotos(req.params.userId, req.params.type)
