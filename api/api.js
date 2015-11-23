@@ -18,11 +18,11 @@ module.exports.init = function() {
   server.on('MethodNotAllowed', CORSPolicy.unknownMethodHandler);
 
   server.post("/user", UserController.login, AuthPolicy.login);
-  server.post("/user/logout", UserController.logout);
 
   server.use(AuthPolicy.checkSession);
 
   server.get("/user", UserController.find);
+  server.post("/user/logout", UserController.logout);
   server.get("/user/settings", UserController.getSettings);
   server.put("/user/settings", UserController.updateSettings);
   server.put("/user/activity", UserController.updateActivity);
