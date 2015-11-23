@@ -34,6 +34,10 @@ module.exports = {
         });
   },
 
+  logout: function (params) {
+    return this.rmDevice(params);
+  },
+
   find: function(id) {
     return this.findByFilter({ _id: id });
   },
@@ -114,6 +118,17 @@ module.exports = {
           if (!user.devices.some(isDeviceAlreadyAdded)) {
             user.devices.push(device);
           }
+          return self.save(user);
+        });
+  },
+
+  rmDevice: function (params) {
+    var self = this;
+    var device = params.device;
+
+    return this.find(params.userId)
+        .then(function(user){
+          user.devices = _.filter(user.devices, function (d) {return device.token != d.token});
           return self.save(user);
         });
   },

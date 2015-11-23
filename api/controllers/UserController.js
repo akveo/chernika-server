@@ -16,6 +16,16 @@ module.exports = {
         });
   },
 
+  logout: function (req, res) {
+    UserService.logout(req.params)
+        .then(function() {
+          res.send(204);
+        })
+        .fail(function (error) {
+          res.send(500, 'Internal error');
+        });
+  },
+
   find: function(req, res) {
     UserService.find(req.params.userId)
         .then(function(user) {

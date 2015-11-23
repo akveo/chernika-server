@@ -18,6 +18,7 @@ module.exports.init = function() {
   server.on('MethodNotAllowed', CORSPolicy.unknownMethodHandler);
 
   server.post("/user", UserController.login, AuthPolicy.login);
+  server.post("/user/logout", UserController.logout);
 
   server.use(AuthPolicy.checkSession);
 
