@@ -4,7 +4,9 @@
   GLOBAL['logger'] = logger;
   var models = require('./../api/model');
   var utils = require('./../utils');
+  var SuggestService = require('./../api/services/SuggestService');
   var UserService = require('./../api/services/UserService');
+
   var q = require('q');
 
   models.init();
@@ -83,6 +85,8 @@
     });
     chats.forEach(function (chat, index) {
       var chatModel = new Chat(chat);
+      SuggestService.dislike(chat.users[0], chat.users[1]);
+      SuggestService.dislike(chat.users[1], chat.users[0]);
       savePromises.push(modelSavePromise(chatModel))
     });
 
