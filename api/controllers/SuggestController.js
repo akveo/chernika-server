@@ -22,7 +22,7 @@ module.exports = {
 		if (!req.params.targetId) {
 			return res.send(400, 'Incorrect parameters');
 		}
-		SuggestService.like(req.params.userId, req.params.targetId)
+		SuggestService.dislike(req.params.userId, req.params.targetId)
 			.then(function() {
 				res.send(204);
 			})
