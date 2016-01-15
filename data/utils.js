@@ -16,28 +16,24 @@
       sender:  undefined,
       chat:  undefined,
       text: 'Привет, у тебя красивые фотки!',
-      created: new Date(),
       wasRead: false
     },
     {
       sender:  undefined,
       chat:  undefined,
       text: 'У тебя тоже)',
-      created: new Date(),
       wasRead: false
     },
     {
       sender:  undefined,
       chat:  undefined,
       text: 'Не хочешь встретиться?',
-      created: new Date(),
       wasRead: true
     },
     {
       sender:  undefined,
       chat:  undefined,
       text: 'Давай)',
-      created: new Date(),
       wasRead: true
     }
   ];

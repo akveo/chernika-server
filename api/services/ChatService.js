@@ -23,9 +23,9 @@ module.exports = {
     addMessage: function(message) {
         var deferred = q.defer();
 
-        message.save(function (err) {
+        message.save(function (err, res) {
             if (!err) {
-                deferred.resolve(message.id);
+                deferred.resolve(message);
             } else {
                 logger.info('Cannot save chat: ', err);
                 deferred.reject(err);

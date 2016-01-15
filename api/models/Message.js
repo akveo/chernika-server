@@ -5,8 +5,7 @@ var messageSchema = new Schema({
     sender:  {type: Schema.Types.ObjectId, ref:'User'},
     chat:  {type: Schema.Types.ObjectId, ref:'Chat'},
     text: String,
-    created: Date,
     wasRead: {type: Boolean, default: false}
-});
+}, { timestamps: { createdAt: 'created', updatedAt: 'updated' }});
 
 module.exports = messageSchema;

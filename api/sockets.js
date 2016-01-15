@@ -42,10 +42,10 @@ function initializeAuthorizedSocket(socket) {
     attachSafely(socket, 'join_chat', joinChatRoom);
 
     function onNewMessage(data) {
-        var messageDocument = new Message(data.message);
-        ChatService.addMessage(messageDocument).then(function () {
+	var messageDocument = new Message(data.message);
+        ChatService.addMessage(messageDocument).then(function (msg) {
 	    console.log('new message');
-	    console.log(io);
+	    messageDocument = msg;
             io.to('chat_' + messageDocument.chat).emit('new_message', messageDocument);
             Push.sendNotification(data.receiver, messageDocument.text, data.senderName);
         });
