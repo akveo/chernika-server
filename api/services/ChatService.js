@@ -80,7 +80,7 @@ module.exports = {
                 promises.push(ChatService.getInfo (c, userId));
             });
             q.all(promises).then(function(res) {
-                deferred.resolve(res)
+                deferred.resolve(ChatService.sortChatsWithInfo(res));
             });
         });
 
@@ -92,7 +92,8 @@ module.exports = {
 
         var userForInfoId = chat.users[0] == infoReceiverId ? chat.users[1] : chat.users[0];
         var info = {
-            chat: chat._id
+            chat: chat._id,
+	    created: chat.created
         };
 
         UserService.getUserWithPhotos(userForInfoId)
@@ -108,6 +109,14 @@ module.exports = {
             });
 
         return deferred.promise;
+    },
+
+    sortChatsWithInfo: function (chats) {
+	return chats.sort( function (chat1, chat2) {
+	    var chat1time = chat1.message ? new Date(chat1.message.created) : new Date(chat1.created);
+	    var chat2time = chat2.message ? new Date(chat2.message.created) : new Date(chat2.created);
+            return chat2time - chat1time;
+        });
     },
 
     getMessages: function(chatId, skip) {
