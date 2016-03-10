@@ -35,6 +35,7 @@ module.exports.init = function() {
   server.get("/suggestions", SuggestController.findByGeo);
   server.post("/suggestions/like", SuggestController.like);
   server.post("/suggestions/dislike", SuggestController.dislike);
+  server.post("/suggestions/report", SuggestController.report);
 
   server.get("/chats", ChatController.findAll);
   server.get("/chats/info", ChatController.getChatsInfo);

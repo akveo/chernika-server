@@ -28,6 +28,9 @@ module.exports = {
 
     var chatSchema = require('./models/Chat');
     GLOBAL['Chat'] = mongoose.model('Chat', chatSchema);
+
+		var reportSchema = require('./models/Report');
+		GLOBAL['Report'] = mongoose.model('Report', reportSchema);
 	}
 }
 

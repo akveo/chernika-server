@@ -61,6 +61,22 @@ module.exports = {
     },
 
     getLikedUsers: getLikedUsers,
+
+    report: function (userId, targetId) {
+        var report = new Report();
+        report.user = userId;
+        report.target = targetId;
+        var deferred = q.defer();
+        report.save(function (err) {
+            if (!err) {
+                deferred.resolve(match._id);
+            } else {
+                logger.info('Cannot save report: ', err);
+                deferred.reject(err);
+            }
+        });
+        return deferred.promise;
+    },
 	
 	dislike: function (userId, targetId) {
 		var match = new Match();
