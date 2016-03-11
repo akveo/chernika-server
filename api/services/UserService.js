@@ -29,7 +29,16 @@ module.exports = {
                 if (user.isNew) {
                   user.initSettings();
                 }
-                return self.save(user);
+                var deferred = q.defer();
+                user.save(function (err) {
+                  if (!err) {
+                    deferred.resolve({id: user._id, confirmPolicy: user.confirmPolicy});
+                  } else {
+                    logger.info('Cannot save user: ', err);
+                    deferred.reject(err);
+                  }
+                });
+                return deferred.promise;
               });
         });
   },
@@ -137,7 +146,7 @@ module.exports = {
     var deferred = q.defer();
     user.save(function (err) {
       if (!err) {
-        deferred.resolve(user._id, user.confirmPolicy);
+        deferred.resolve(user._id);
       } else {
         logger.info('Cannot save user: ', err);
         deferred.reject(err);

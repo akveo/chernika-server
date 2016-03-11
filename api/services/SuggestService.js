@@ -69,7 +69,7 @@ module.exports = {
         var deferred = q.defer();
         report.save(function (err) {
             if (!err) {
-                deferred.resolve(match._id);
+                deferred.resolve(report._id);
             } else {
                 logger.info('Cannot save report: ', err);
                 deferred.reject(err);
