@@ -6,8 +6,9 @@ module.exports = {
       return res.send(400, 'Incorrect parameters');
     }
     UserService.login(req.params.user_id, req.params.access_token, req.params.vkUser)
-        .then(function(userId) {
+        .then(function(userId, confirmPolicy) {
           req.params.userId = userId;
+          req.params.confirmPolicy = confirmPolicy;
           return next();
         })
         .fail(function (error) {
