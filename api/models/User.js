@@ -32,6 +32,7 @@ var userSchema = new Schema({
 
 userSchema.methods.initSettings = function() {
 	this.settings = {
+		confirmPolicy: false,
 		enableFriends: true,
 		distance: 100,
 		minAge: 18,
