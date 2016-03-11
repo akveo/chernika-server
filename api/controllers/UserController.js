@@ -94,6 +94,16 @@ module.exports = {
         .fail(function (error) {
           res.send(500, 'Internal error');
         });
+  },
+
+  confirmPolicy: function (req, res) {
+    UserService.confirmPolicy(req.params)
+      .then(function() {
+        res.send(204);
+      })
+      .fail(function (error) {
+        res.send(500, 'Internal error');
+      });
   }
 };
 

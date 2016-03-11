@@ -160,6 +160,15 @@ module.exports = {
             photos: user.photos
           }
         });
+  },
+
+  confirmPolicy: function(params) {
+    var self = this;
+    return this.find(params.userId)
+      .then(function(user) {
+        user.confirmPolicy = true;
+        return self.save(user);
+      });
   }
 };
 

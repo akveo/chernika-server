@@ -20,7 +20,7 @@ module.exports.init = function() {
   server.post("/user", UserController.login, AuthPolicy.login);
 
   server.use(AuthPolicy.checkSession);
-
+  server.post("/confirmPolicy", UserController.confirmPolicy);
   server.get("/user", UserController.find);
   server.post("/user/logout", UserController.logout);
   server.get("/user/settings", UserController.getSettings);

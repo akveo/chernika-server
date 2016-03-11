@@ -8,6 +8,7 @@ var userSchema = new Schema({
 	age: Number,
 	lastKnownPosition: {type: { type: String, default: 'Point' }, coordinates: {type: Array, default: [0,0]}},
 	lastActivity: Date,
+	confirmPolicy: Boolean,
 	settings: {
 		enableFriends: Boolean,
 		distance: Number,
