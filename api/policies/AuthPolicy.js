@@ -10,7 +10,7 @@ module.exports = {
 		});
 		res.setHeader('Access-Token', encryptor.cipher(token));
         res.setHeader('Access-Control-Expose-Headers', 'Access-Token');
-		res.send(204, {confirmPolicy: req.params.confirmPolicy});
+		res.send({confirmPolicy: !!req.params.confirmPolicy});
 	},
 
 	checkSession: function (req, res, next) {
