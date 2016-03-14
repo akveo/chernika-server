@@ -22,8 +22,8 @@ module.exports = {
 
     addMessage: function(message) {
         var deferred = q.defer();
-        Chat.findById(message.chat, function(chat){
-            if(!chat.blocked){
+        Chat.findById(message.chat, function(err, chat){
+            if(chat && !chat.blocked){
                 message.save(function (err, res) {
                     if (!err) {
                         deferred.resolve(message);
