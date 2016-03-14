@@ -54,7 +54,7 @@ module.exports = {
     findChats: function (userId) {
         var deferred = q.defer();
 
-        Chat.find({users: userId}, function (err, chats) {
+        Chat.find({users: userId, blocked: false}, function (err, chats) {
             if (!err) {
                 deferred.resolve(chats);
             } else {
@@ -210,10 +210,9 @@ module.exports = {
 
   removeChart: function (userId1, userId2) {
       var deferred = q.defer();
-      Model.remove({$and: [ {users: userId1}, {users: userId2 }]}, function(err) {
+      Chat.update({$and: [ {users: userId1}, {users: userId2 }]}, {blocked: true}, {multi: false}, function(err) {
           if (!err) {
               deferred.resolve();
-              console.log("deleted");
           }
           else {
               console.log(err);
