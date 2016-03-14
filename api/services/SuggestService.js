@@ -79,7 +79,7 @@ module.exports = {
     },
 
     block: function (userId, targetId) {
-        return ChartService.removeChart(userId, targetId);
+        return ChatService.removeChart(userId, targetId);
     },
 	
 	dislike: function (userId, targetId) {

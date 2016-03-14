@@ -215,7 +215,7 @@ module.exports = {
               deferred.resolve();
           }
           else {
-              console.log(err);
+              logger.info('Cannot block chat: ', err);
               deferred.reject(err);
           }
       });
