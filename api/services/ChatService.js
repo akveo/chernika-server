@@ -22,17 +22,18 @@ module.exports = {
 
     addMessage: function(message) {
         var deferred = q.defer();
-        Chat.findById(message.chat, function(err, chat){
-            if(chat && !chat.blocked){
-                message.save(function (err, res) {
-                    if (!err) {
-                        deferred.resolve(message);
-                    } else {
-                        logger.info('Cannot save chat: ', err);
-                        deferred.reject(err);
-                    }
-                });
+        Chat.findOne({ _id: message.chat, blocked : false }, function(err, chat){
+            if (!chat) {
+                return deferred.reject(err);
             }
+            message.save(function (err, res) {
+                if (!err) {
+                    deferred.resolve(message);
+                } else {
+                    logger.info('Cannot save chat: ', err);
+                    deferred.reject(err);
+                }
+            });
         });
         return deferred.promise;
     },
@@ -229,7 +230,7 @@ module.exports = {
 		chat.users = [userId1, userId2];
 		return this.save(chat);
 	},
-	
+
     save: function(chat) {
         var deferred = q.defer();
 
