@@ -208,7 +208,7 @@ module.exports = {
         return deferred.promise;
     },
 
-  removeChart: function (userId1, userId2) {
+  blockChat: function (userId1, userId2) {
       var deferred = q.defer();
       Chat.update({$and: [ {users: userId1}, {users: userId2 }]}, {blocked: true}, {multi: false}, function(err) {
           if (!err) {
