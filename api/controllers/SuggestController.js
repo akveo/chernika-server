@@ -45,6 +45,20 @@ module.exports = {
 				res.send(500, 'Internal error');
 			});
 	},
+
+	 block: function(req, res) {
+		if (!req.params.targetId) {
+			return res.send(400, 'Incorrect parameters');
+		}
+		SuggestService.block(req.params.userId, req.params.targetId)
+			.then(function() {
+				res.send(204);
+			})
+			.fail(function (error) {
+				logger.error('Api report: %s', error.toString());
+				res.send(500, 'Internal error');
+			});
+	},
 	
 	findByGeo: function (req, res) {
 		if (!req.params.lon, !req.params.lat) {

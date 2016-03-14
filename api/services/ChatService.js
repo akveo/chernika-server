@@ -208,6 +208,21 @@ module.exports = {
         return deferred.promise;
     },
 
+  removeChart: function (userId1, userId2) {
+      var deferred = q.defer();
+      Model.remove({$and: [ {users: userId1}, {users: userId2 }]}, function(err) {
+          if (!err) {
+              deferred.resolve();
+              console.log("deleted");
+          }
+          else {
+              console.log(err);
+              deferred.reject(err);
+          }
+      });
+      return deferred.promise;
+  },
+
 	create: function(userId1, userId2) {
 		var chat = new Chat();
 		chat.users = [userId1, userId2];

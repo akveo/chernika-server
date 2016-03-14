@@ -77,6 +77,10 @@ module.exports = {
         });
         return deferred.promise;
     },
+
+    block: function (userId, targetId) {
+        return ChartService.removeChart(userId, targetId);
+    },
 	
 	dislike: function (userId, targetId) {
 		var match = new Match();
