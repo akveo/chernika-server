@@ -80,7 +80,8 @@
       }
     });
     chats.forEach(function (chat, index) {
-      var chatModel = new Chat(chat);
+      var chatModel = new Chat();
+      chatModel.users = chat.users;
       SuggestService.dislike(chat.users[0], chat.users[1]);
       SuggestService.dislike(chat.users[1], chat.users[0]);
       savePromises.push(modelSavePromise(chatModel))
