@@ -74,7 +74,7 @@
     userIds.forEach(function(uId, index) {
       if (index != 0) {
         var chat = {
-          users: [userIds[index], userIds[index - 1]]
+          users: [userIds[index].id, userIds[index - 1].id]
         };
         chats.push(chat);
       }
