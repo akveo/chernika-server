@@ -1,7 +1,7 @@
 var io = require('socket.io');
 var AuthPolicy = require('./policies/AuthPolicy.js');
 var mongoose = require('mongoose');
-var Push = require('./Push');
+var push = require('./pushNotification');
 
 module.exports = {
   init: function (server) {
@@ -46,7 +46,7 @@ function initializeAuthorizedSocket(socket) {
     ChatService.addMessage(messageDocument).then(function (msg) {
       messageDocument = msg;
       io.to('chat_' + messageDocument.chat).emit('new_message', messageDocument);
-      Push.sendNotification(data.receiver, messageDocument.text, data.senderName);
+      push.sendNotification(data.receiver, messageDocument.text, data.senderName);
     });
   }
 

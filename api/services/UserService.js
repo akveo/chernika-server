@@ -1,7 +1,7 @@
 var q = require('q');
 var _ = require('underscore');
-var vkApi = require('../../vkApi');
-var imagesUtil = require('../images');
+var vkApi = require('../../lib/vkApi');
+var imageUtils = require('../../utils/image');
 
 module.exports = {
 
@@ -194,12 +194,12 @@ function vkBdateToAge(bdate) {
 function cropPhotos(photos) {
   var cropPromises = [];
 
-  photos = _.map(photos, function (i) {
-    return getMaxSizes(i.sizes);
+  photos = _.map(photos, function (p) {
+    return getMaxSizes(p.sizes);
   });
 
-  _.each(photos, function (i) {
-    i && cropPromises.push(imagesUtil.countCrop(i));
+  _.each(photos, function (p) {
+    p && cropPromises.push(imageUtils.countCrop(p));
   });
 
   return q.all(cropPromises);

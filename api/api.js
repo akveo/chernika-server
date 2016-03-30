@@ -1,8 +1,8 @@
 var restify = require('restify');
 var q = require('q');
 var path = require('path');
-var sockets = require('./sockets');
-var vkApi = require('../vkApi');
+var chatApi = require('./socketChatApi');
+var vkApi = require('../lib/vkApi');
 initBasicComponents();
 
 module.exports.init = function () {
@@ -12,7 +12,7 @@ module.exports.init = function () {
     .use(restify.bodyParser())
     .use(restify.queryParser());
 
-  sockets.init(server.server);
+  chatApi.init(server.server);
 
   server.on('MethodNotAllowed', CORSPolicy.unknownMethodHandler);
 

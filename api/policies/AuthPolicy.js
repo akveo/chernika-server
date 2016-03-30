@@ -1,4 +1,4 @@
-var encryptor = require('../../encryptor');
+var encryptor = require('../../utils/encryptor');
 
 module.exports = {
 
