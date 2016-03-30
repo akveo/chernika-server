@@ -42,7 +42,6 @@ module.exports.init = function () {
   server.get("/chats/matched/:matchedProfileId", ChatController.getMatchedChat);
   server.get("/chats/:chatId", ChatController.find);
   server.get("/chats/:chatId/messages", ChatController.findMessages);
-  server.post("/chats/:chatId/messages", ChatController.createMessage);
 
   vkApi.init();
 

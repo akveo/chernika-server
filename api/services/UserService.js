@@ -203,13 +203,6 @@ function cropPhotos(photos) {
   });
 
   return q.all(cropPromises);
-//        .then(function (result) {
-//            console.log(result)
-//            deferred.resolve(result)
-//        }, function(err) {
-//            logger.info('Cannot crop user photos', err);
-//            deferred.reject(err);
-//        });
 }
 
 function getMaxSizes(sizes) {

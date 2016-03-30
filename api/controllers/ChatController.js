@@ -61,13 +61,6 @@ module.exports = {
       res.send(500, 'Internal error');
     })
   },
-
-  createMessage: function (req, res) {
-    if (!req.params.chatId) {
-      return res.send(400, 'Incorrect parameters');
-    }
-    res.send([]);
-  }
 };
 
 

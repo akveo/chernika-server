@@ -42,7 +42,6 @@ module.exports = {
 
     Message.findByIdAndUpdate(mId, {$set: {wasRead: true}}, {new: true}, function (err, msg) {
       if (err) {
-        console.log(err)
         logger.info('Cannot update message: ', err);
         deferred.reject(err);
       } else {
