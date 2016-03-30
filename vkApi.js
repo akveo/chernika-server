@@ -7,33 +7,20 @@ module.exports = {
 	
 	login: function(userId, accessToken) {
 		var self = this;
-		return this.checkAccessToken(userId, accessToken)
-			.then(function() {
-				return self.getUserInfo(userId);
-			}, function(err) {
-				logger.error('Check access token: ' + err);
-			});
+		return q.when(this.checkAccessToken(userId, accessToken), function(tokenCorrect){
+            if(tokenCorrect) {
+                return self.getUserInfo(userId)
+            } else {
+                throw new Error("Problems with user token userId=" + userId + " accessToken=" + accessToken);
+            }
+        });
 	},
 
     checkAccessToken: function(userId, accessToken) {
-        var deferred = q.defer();
-
-        if (config.dbPopulateInProgress) {
-            deferred.resolve();
-        }
-
-        this.secureRequest('secure.checkToken', {'token' : accessToken})
+        return this.secureRequest('secure.checkToken', {'token' : accessToken})
             .then(function (r) {
-                if (r.user_id == userId) {
-                    deferred.resolve();
-                } else {
-                    deferred.reject('Incorrect access token for user: %d', userId);
-                }
-            }, function(err){
-                deferred.reject(err);
+                return r.user_id == userId;
             });
-
-        return deferred.promise;
     },
 	
 	getUserInfo: function(id) {
