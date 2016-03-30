@@ -125,7 +125,7 @@ module.exports = {
     var deferred = q.defer();
     skip = skip || 0;
 
-    Message.find({chat: chatId}).sort({created: -1}).skip(skip).limit(config.chatPageSize)
+    Message.find({chat: chatId}).sort({created: -1}).skip(parseInt(skip) || 0).limit(config.chatPageSize)
       .exec(function (err, messages) {
         if (!err) {
           deferred.resolve(messages);
