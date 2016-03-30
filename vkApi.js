@@ -29,6 +29,8 @@ module.exports = {
                 } else {
                     deferred.reject('Incorrect access token for user: %d', userId);
                 }
+            }, function(err){
+                deferred.reject(err);
             });
 
         return deferred.promise;
