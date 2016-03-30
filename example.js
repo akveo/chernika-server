@@ -10,22 +10,22 @@ var images = require('./api/images.js');
 //    .then(console.log, console.log);
 
 
-s.on('load', function(matrix){
-    console.log(matrix.width());
-    console.log(matrix.height());
-    matrix.detectObject(cv.FACE_CASCADE, {}, function(err, faces){
-        if (err) throw err;
-        console.log(faces)
+s.on('load', function (matrix) {
+  console.log(matrix.width());
+  console.log(matrix.height());
+  matrix.detectObject(cv.FACE_CASCADE, {}, function (err, faces) {
+    if (err) throw err;
+    console.log(faces)
 
-        for (var i = 0; i < faces.length; i++){
-            var face = faces[i];
-            console.log(face);
-            matrix.ellipse(face.x + face.width / 2, face.y + face.height / 2, face.width / 2, face.height / 2);
-        }
+    for (var i = 0; i < faces.length; i++) {
+      var face = faces[i];
+      console.log(face);
+      matrix.ellipse(face.x + face.width / 2, face.y + face.height / 2, face.width / 2, face.height / 2);
+    }
 
-        matrix.save('./face-detection.png');
-        console.log('Image saved to ./face-detection.png');
-    });
+    matrix.save('./face-detection.png');
+    console.log('Image saved to ./face-detection.png');
+  });
 });
 
 request.get('https://pp.vk.me/c412419/v412419928/7fcd/_kSHJn2Hr3s.jpg').pipe(s);

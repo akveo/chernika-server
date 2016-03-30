@@ -1,5 +1,5 @@
-(function() {
-  GLOBAL["config"] =  require('./../config.local.js');
+(function () {
+  GLOBAL["config"] = require('./../config.local.js');
   var logger = require('../logger').create();
   GLOBAL['logger'] = logger;
   var models = require('./../api/model');
@@ -13,26 +13,26 @@
 
   var messages = [
     {
-      sender:  undefined,
-      chat:  undefined,
+      sender: undefined,
+      chat: undefined,
       text: 'Привет, у тебя красивые фотки!',
       wasRead: false
     },
     {
-      sender:  undefined,
-      chat:  undefined,
+      sender: undefined,
+      chat: undefined,
       text: 'У тебя тоже)',
       wasRead: false
     },
     {
-      sender:  undefined,
-      chat:  undefined,
+      sender: undefined,
+      chat: undefined,
       text: 'Не хочешь встретиться?',
       wasRead: true
     },
     {
-      sender:  undefined,
-      chat:  undefined,
+      sender: undefined,
+      chat: undefined,
       text: 'Давай)',
       wasRead: true
     }
@@ -63,7 +63,9 @@
         });
     });
 
-    setTimeout(function () {deferred.resolve(userIds)}, 60000);
+    setTimeout(function () {
+      deferred.resolve(userIds)
+    }, 60000);
     return deferred.promise;
   }
 
@@ -71,7 +73,7 @@
     var savePromises = [];
 
     var chats = [];
-    userIds.forEach(function(uId, index) {
+    userIds.forEach(function (uId, index) {
       if (index != 0) {
         var chat = {
           users: [userIds[index].id, userIds[index - 1].id]
@@ -95,7 +97,7 @@
   function saveMessages(chats) {
     var savePromises = [];
 
-    chats.forEach(function(chat, cIndex) {
+    chats.forEach(function (chat, cIndex) {
       messages.forEach(function (message, mIndex) {
         var messageModel = new Message({
           sender: mIndex % 2 == 0 ? chat.users[0] : chat.users[1],
@@ -138,7 +140,7 @@
     var deferred = q.defer();
 
     model.save(function (err) {
-      if(err) {
+      if (err) {
         console.log(err);
         deferred.reject(err);
       } else {
@@ -153,7 +155,7 @@
     var deferred = q.defer();
 
     model.remove(function (err) {
-      if(err) {
+      if (err) {
         console.log(err);
         deferred.reject(err);
       } else {

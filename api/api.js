@@ -1,4 +1,3 @@
-
 var restify = require('restify');
 var q = require('q');
 var path = require('path');
@@ -6,12 +5,12 @@ var sockets = require('./sockets');
 var vkApi = require('../vkApi');
 initBasicComponents();
 
-module.exports.init = function() {
+module.exports.init = function () {
   var server = restify.createServer();
   server
-      .use(restify.fullResponse())
-      .use(restify.bodyParser())
-      .use(restify.queryParser());
+    .use(restify.fullResponse())
+    .use(restify.bodyParser())
+    .use(restify.queryParser());
 
   sockets.init(server.server);
 
