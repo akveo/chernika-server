@@ -4,21 +4,17 @@ var Push = require('../Push');
 module.exports = {
 
   findByGeo: function (userId, lon, lat) {
-    var self = this;
-
     lon = parseFloat(lon);
     lat = parseFloat(lat);
     return UserService.update(userId, {
         lastKnownPosition: {type: 'Point', coordinates: [lon, lat]},
         lastActivity: new Date()
       })
-      .then(self._getFindByGeoParams)
-      .then(self._findByGeo);
+      .then(SuggestService._getFindByGeoParams)
+      .then(SuggestService._findByGeo);
   },
 
   _getFindByGeoParams: function (user) {
-    var deferred = q.defer();
-
     var params = {
       maxDistance: user.settings.distance || 100,
       sex: user.settings.show ? [user.settings.show] : [1, 2],
@@ -26,20 +22,16 @@ module.exports = {
       maxAge: user.settings.maxAge,
       position: user.lastKnownPosition
     };
-
-    getLikedUsers(user._id)
+    return this.getLikedUsers(user._id)
       .then(function (uIds) {
         uIds.push(user._id);
         params.likedUsers = uIds;
-        deferred.resolve(params);
+        return params;
       });
-
-    return deferred.promise;
   },
 
   _findByGeo: function (params) {
     var deferred = q.defer();
-
     User.geoNear(params.position, {
       maxDistance: params.maxDistance * 1000,
       spherical: true,
@@ -55,11 +47,19 @@ module.exports = {
     }, function (err, users) {
       deferred.resolve(users)
     });
-
     return deferred.promise;
   },
 
-  getLikedUsers: getLikedUsers,
+  getLikedUsers: function (userId) {
+    var deferred = q.defer();
+    Match.find({user: userId}, function (err, matches) {
+      var userIds = matches.map(function (m) {
+        return m.target;
+      });
+      deferred.resolve(userIds);
+    });
+    return deferred.promise;
+  },
 
   report: function (userId, targetId) {
     var report = new Report();
@@ -113,10 +113,10 @@ module.exports = {
   isOppositeMatched: function (userId, targetId) {
     var deferred = q.defer();
     Match.findOne({user: targetId, target: userId}, function (err, oppositeMatch) {
-
       deferred.resolve(oppositeMatch && oppositeMatch.like);
       if (err) {
         logger.info('Cannot return user.');
+        deferred.reject(err);
       }
     });
     return deferred.promise;
@@ -135,16 +135,3 @@ module.exports = {
     return deferred.promise;
   }
 };
-
-function getLikedUsers(userId) {
-  var deferred = q.defer();
-
-  Match.find({user: userId}, function (err, matches) {
-    var userIds = matches.map(function (m) {
-      return m.target;
-    });
-    deferred.resolve(userIds);
-  });
-
-  return deferred.promise;
-}

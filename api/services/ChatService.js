@@ -39,22 +39,19 @@ module.exports = {
 
   markMessageRead: function (mId) {
     var deferred = q.defer();
-
     Message.findByIdAndUpdate(mId, {$set: {wasRead: true}}, {new: true}, function (err, msg) {
       if (err) {
         logger.info('Cannot update message: ', err);
         deferred.reject(err);
       } else {
-        deferred.resolve(msg)
+        deferred.resolve(msg);
       }
     });
-
     return deferred.promise;
   },
 
   findChats: function (userId) {
     var deferred = q.defer();
-
     Chat.find({users: userId, blocked: false}, function (err, chats) {
       if (!err) {
         deferred.resolve(chats);
@@ -63,7 +60,6 @@ module.exports = {
         deferred.reject(err);
       }
     });
-
     return deferred.promise;
   },
 
@@ -72,44 +68,33 @@ module.exports = {
   },
 
   getChatsInfo: function (userId) {
-    var deferred = q.defer();
-
-    var promises = [];
-
-    ChatService.findChats(userId).then(function (chats) {
-      chats.forEach(function (c) {
-        promises.push(ChatService.getInfo(c, userId));
+    return ChatService.findChats(userId)
+      .then(function (chats) {
+        var promises = chats.map(function (c) {
+          return ChatService.getInfo(c, userId);
+        });
+        return q.all(promises).then(function (res) {
+          return ChatService.sortChatsWithInfo(res);
+        });
       });
-      q.all(promises).then(function (res) {
-        deferred.resolve(ChatService.sortChatsWithInfo(res));
-      });
-    });
-
-    return deferred.promise;
   },
 
   getInfo: function (chat, infoReceiverId) {
-    var deferred = q.defer();
-
     var userForInfoId = chat.users[0] == infoReceiverId ? chat.users[1] : chat.users[0];
     var info = {
       chat: chat._id,
       created: chat.created
     };
 
-    UserService.getUserWithPhotos(userForInfoId)
+    return UserService.getUserWithPhotos(userForInfoId)
       .then(function (user) {
         info.user = user;
-        return ChatService.getLastChatMessage(chat._id)
+        return ChatService.getLastChatMessage(chat._id);
       })
       .then(function (message) {
         info.message = message;
-        deferred.resolve(info)
-      }, function (err) {
-        deferred.reject(err);
+        return info;
       });
-
-    return deferred.promise;
   },
 
   sortChatsWithInfo: function (chats) {
@@ -122,8 +107,6 @@ module.exports = {
 
   getMessages: function (chatId, skip) {
     var deferred = q.defer();
-    skip = skip || 0;
-
     Message.find({chat: chatId}).sort({created: -1}).skip(parseInt(skip) || 0).limit(config.chatPageSize)
       .exec(function (err, messages) {
         if (!err) {
@@ -133,7 +116,6 @@ module.exports = {
           deferred.reject(err);
         }
       });
-
     return deferred.promise;
   },
 
@@ -196,17 +178,7 @@ module.exports = {
   },
 
   findByUsersIds: function (userId1, userId2) {
-    var deferred = q.defer();
-
-    ChatService.findByFilter({$and: [{users: userId1}, {users: userId2}]})
-      .then(function (data) {
-        deferred.resolve(data);
-      }, function (err) {
-        logger.info('Cannot find chat: ', err);
-        deferred.reject(err);
-      });
-
-    return deferred.promise;
+    return ChatService.findByFilter({$and: [{users: userId1}, {users: userId2}]});
   },
 
   blockChat: function (userId1, userId2) {
@@ -231,7 +203,6 @@ module.exports = {
 
   save: function (chat) {
     var deferred = q.defer();
-
     chat.save(function (err) {
       if (!err) {
         deferred.resolve(chat.id);
@@ -240,7 +211,6 @@ module.exports = {
         deferred.reject(err);
       }
     });
-
     return deferred.promise;
   }
 };
