@@ -35,7 +35,7 @@ module.exports = {
     User.geoNear(params.position, {
       maxDistance: params.maxDistance * 1000,
       spherical: true,
-      limit: config.geoNearLimit,
+      limit: config.geoNearLimit * 3,
       query: {
         _id: {$nin: params.likedUsers},
         sex: {$in: params.sex},
@@ -45,6 +45,9 @@ module.exports = {
         }
       }
     }, function (err, users) {
+      users = users.sort(function(u1, u2){
+        return u2.lastActivity - u1.lastActivity;
+      }).slice(0, config.geoNearLimit);
       deferred.resolve(users)
     });
     return deferred.promise;
