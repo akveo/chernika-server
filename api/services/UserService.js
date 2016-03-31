@@ -183,22 +183,12 @@ module.exports = {
   }
 };
 
-
-//Shit, ok for now
 function vkBdateToAge(bdate) {
-  bdate = bdate || '';
-
-  var splittedBdate = bdate.split('.').map(function (el) {
-    return parseInt(el);
-  });
-
-  if (splittedBdate.length == 1) {
-    splittedBdate = [13, 11, 1993];
-  } else if (splittedBdate.length == 2) {
-    splittedBdate[2] = 1992;
-  }
-
-  return new Date(new Date - new Date(splittedBdate[2], splittedBdate[1] - 1, splittedBdate[0])).getFullYear() - 1970
+  var defaultAge = 22;
+  if(!bdate) return defaultAge;
+  var dateParts = bdate.split('.');
+  if(dateParts.length < 3) return defaultAge;
+  return new Date(new Date - new Date(dateParts[2], dateParts[1] - 1, dateParts[0])).getFullYear() - 1970
 }
 
 function cropPhotos(photos) {
