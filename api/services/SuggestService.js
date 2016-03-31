@@ -1,5 +1,5 @@
 var q = require('q');
-var Push = require('../Push');
+var push = require('../pushNotification');
 
 module.exports = {
 
@@ -102,8 +102,8 @@ module.exports = {
         if (isMatched) {
           ChatService.create(userId, targetId)
             .then(function () {
-              Push.sendNotification(userId, 'Новая пара!');
-              Push.sendNotification(targetId, 'Новая пара!');
+              push.sendNotification(userId, 'Новая пара!');
+              push.sendNotification(targetId, 'Новая пара!');
             });
         }
         return !!isMatched;
