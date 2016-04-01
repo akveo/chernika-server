@@ -22,7 +22,7 @@ module.exports = {
       maxAge: user.settings.maxAge,
       position: user.lastKnownPosition
     };
-    return this.getLikedUsers(user._id)
+    return SuggestService.getLikedUsers(user._id)
       .then(function (uIds) {
         uIds.push(user._id);
         params.likedUsers = uIds;
