@@ -1,3 +1,5 @@
+(chernika-server is no longer officially supported. Please feel free to fork, chop and change, use as reference)
+
 Some library dependencies
 ```bash
 sudo apt-get install libkrb5-dev
