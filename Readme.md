@@ -5,7 +5,7 @@ Some library dependencies
 sudo apt-get install libkrb5-dev
 ```
 
-To install opencv 2.4.8 on ubuntu 14.04 please follow to these instructions:
+To install opencv 2.4.8 on ubuntu 14.04 please follow these instructions:
 
 ```bash
 sudo apt-get install libcv-dev libhighgui-dev libopencv-contrib-dev libopencv-dev
