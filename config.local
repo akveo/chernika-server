@@ -1,0 +1,30 @@
+exports.config={
+	"apiPort": 3000,
+	"vkSettings": {
+		'appId'     : null,
+		'appSecret' : 'null',
+		'language'  : 'en'
+	},
+	"chatPageSize": 20,
+	"emailSettings":{
+		"from": "null",
+		"email": "null",
+		"port": 445,
+		"host": "null",
+		"ssl": true
+	},
+	"crypto":{
+		"algorithm": "null",
+		"password": "null"
+	},
+	"photoCropFactor": 0,
+	"dbSettings":{
+	    "host": "127.0.0.1",
+	    "port": "27017"
+	},
+    "ionic":{
+		"appId": "null"
+	},
+	"withoutPolicy": true,
+	"geoNearLimit": 1
+}
